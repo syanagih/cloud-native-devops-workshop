@@ -2,7 +2,7 @@
 ---
 # ORACLE Cloud-Native DevOps workshop #
 
-## Create Oracle Developer Cloud Service project using initial git repository ##
+## 初期設定Git リポジトリ用いた Developer Cloud Service プロジェクトの作成
 
 ### About this tutorial ###
 **Oracle Developer Cloud Service** is a cloud-based software development Platform as a Service (PaaS) and a hosted environment for your application development infrastructure. It provides an open-source standards-based solution to manage the application development life cycle effectively through integration with Hudson, Git, Maven, issues, and wikis. Using Oracle Developer Cloud Service, you can commit your application source code to the Git repository on the Oracle Cloud, track assigned issues and defects online, share information using wiki pages, peer review the source code, and monitor project builds. After successful testing, you can deploy the project to Oracle Java Cloud Service - SaaS Extension, publicly available Oracle Java Cloud Service instances, Oracle Application Container Cloud Service instances, or to an on-premise production environment.
@@ -27,29 +27,42 @@ This tutorial demonstrates how to:
 
 - create Oracle Developer Cloud Service project using existing external Git repository
 
-### Prerequisites ###
+### 前提
 
-- Oracle Public Cloud Service account including Developer Cloud Service
+- Developer Cloud Service が利用できるアカウントを保有している事
+
 
 ----
 
-#### Create Oracle Developer Cloud Service project ####
+#### Developer Cloud Service プロジェクトの作成
 
-Sign in to [https://cloud.oracle.com/sign-in](https://cloud.oracle.com/sign-in). First select your datacenter then provide the identity domain and credentials. After a successful login you will see your Dashboard. Find the Developer services tile and click the hamburger icon. In the dropdown menu click **Open Service Console**.
-![](images/01.dashboard.png)
+Oracle Cloud へサインインする[(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。
+データセンターを選択し、アイデンティティドメインとアカウント情報を入力してログインする。
+ログイン後、ダッシュボード画面の Developer Cloud Service のドロップダウンメニューから **サービス・コンソールを開く**を選択する。
 
-Log in to Oracle Developer Cloud Services and create a new project.
+![](jpimages/springboot01.jpg)
 
-![alt text](images/02.new.project.png)
 
-Enter the name of the project and set the desired properties. Click **Next** and select *Initial Repository* as template.
+Developer Cloud Service にログインし、**New Project** を選択し新しいプロジェクトを作る。
 
-![](images/03.select.template.png)
+![](jpimages/springboot02.jpg)
 
-Click **Next** and on the Properties page select *Import existing repository*.
-Enter or copy the *https://github.com/oracle/cloud-native-devops-workshop.git* repository address.
 
-![](images/04.import.repository.png "Import external repository")
+プロジェクト名を入力し、**Next** をクリックする。
 
-Now click **Finish** to create the project and to clone the specified repository.
+![](jpimages/springboot03.jpg)
 
+
+テンプレートに***Initial Repository*** を選択し**Next** をクリックする。
+
+![](jpimages/springboot04.jpg)
+
+
+Initial Repository に**Import existing repository**を選択し、***https://github.com/oracle/cloud-native-devops-workshop.git*** を入力する。
+
+![](jpimages/springboot05.jpg)
+
+
+そして、**Finish** をクリックして、指定したGitリポジトリのクローンを持つプロジェクトを作成する。
+
+![](jpimages/springboot06.jpg)

@@ -1,78 +1,109 @@
 ![](../common/images/customer.logo.png)
 ---
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 -----
-## Create Database Cloud Service instance using user interface ##
+## UI を用いた Database Cloud Service インスタンスの作成
 
-### Introduction ###
+### 説明
 
-Oracle Database Cloud Service provides you the ability to deploy Oracle databases in the Cloud, with each database deployment containing a single Oracle database. You have full access to the features and operations available with Oracle Database, but with Oracle providing the computing power, physical storage and (optionally) tooling to simplify routine database maintenance and management operations.
+Database Cloud Service はクラウド上に Oracle Database をデプロイする事が可能である。単一の Oracle Database をそれぞれのデプロイメントにて提供している。Database Cloud Service では、Oracle Database に対する完全な機能と操作を提供しているだけでなく、処理能力や物理ストレージ、またメンテナンスや管理操作をシンプルにするツールも提供している。
 
-When you create database deployments, Database Cloud Service creates compute nodes to host the database, using computing and storage resources provided by Oracle Compute Cloud Service. Additionally, it provides access to the compute nodes (and thus to the database) using networking resources provided by Oracle Compute Cloud Service.
+データベースを作成すると、Database Cloud Service では、データベースをホストするコンピュート・ノードが作成されます。これは、Compute Cloud Service により提供されており、演算処理やストレージ・リソースを備えている。さらに、Compute Cloud　Service によりネットワーク・リソースが扱え、コンピュート・ノードやデータベースにアクセスする事ができる。
 
-### About this tutorial ###
-This tutorial demonstrates how to:
-	
-+ create Database Cloud Service using the user interface.
+### チュートリアルについて
+このチュートリアルは、以下を実施する:
 
-### Prerequisites ###
+- UI を用いて Database Cloud Service インスタンスを作成する
 
-- Oracle Public Cloud Service account including Database and Storage Cloud Service
+### 前提
 
-### Steps ###
+- Database Cloud Service と Storage Cloud Service が利用できるアカウントを保有している事
 
-[Sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign-in](https://cloud.oracle.com/sign-in). First select your datacenter then provide the identity domain and credentials. After a successful login you will see your Dashboard. On the dashboard click the hamburger icon on the Database tile. Select **Open Service Console**.
-![](images/01.png)
+### 手順
 
-This is the Database Cloud Service Console page. To create new instance click **Create Service** button.
-![](images/02.png)
+Oracle Cloud へ[サインイン](../common/sign.in.to.oracle.cloud.md) する [(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。
+データセンターを選択し、アイデンティティドメインとアカウント情報を入力してログインする。
+ログイン後、ダッシュボード画面の Database Cloud Service のドロップダウンメニューから **サービス・コンソールを開く** を選択する。
 
-Select subscription type. Select the fully managed Oracle Database Cloud Service and the desired billing format. For more details about subscription types see the [documentation](https://docs.oracle.com/cloud/latest/dbcs_dbaas/CSDBI/GUID-F1E6807A-D283-4170-AB2B-9D43CD8DCD92.htm#CSDBI3395).
-![](images/03.png)
-
-Select the latest 12c Software Release.
-![](images/04.png)
-
-When creating a database deployment Oracle Database Cloud Service, the following Oracle Database editions are available:
-![](images/05.png)
-Select Enterprise Edition.
-
-The last input page is the Service Details page. The following parameters have to be provided:
-	
-+ **Service Name**: the name of the service instance e.g. techcoDB.
-+ **Description**: any description for your service.
-+ **Shape**: number of OCPU and size of the RAM. Choose the smallest (default) one.
-+ **Timezone**: set your timezone.
-+ **SSH Public Key**: public key which will be uploaded to the VM during the creation. It allows to connect to the VM through ssh connection using the private key. To avoid additional task to create keypairs select Create a New Key option and download the newly generated keypair for later usage. Download the zip file to your `GIT_REPO_LOCAL_CLONE/cloud-utils` folder and unzip for later usage.
-![](images/06.png) 
-Open a terminal and change to folder `/GIT_REPO_LOCAL_CLONE/cloud-utils`. Unzip the file which contains the private and public keys. Most likely its (default) name is *sshkeybundle.zip*.
-
-		$ [oracle@localhost Desktop]$ cd /GIT_REPO_LOCAL_CLONE/cloud-utils
-		$ [oracle@localhost cloud-utils]$ unzip sshkeybundle.zip
-		Archive:  sshkeybundle.zip
-		  inflating: privateKey              
-		  inflating: publicKey
-Before using privateKey it is required to change the mode of the file to rw by owner only.
-
-		$ [oracle@localhost cloud-utils]$  chmod 600 privateKey
-
-+ **Administrator Password**: database instance's system password. Don't forget to note the provided password.
-+ **DB Name (SID)**: container database service identifier.
-+ **PDB Name**: pluggable database service identifier. You can leave the default PDB1
-+ **Backup Destination**: Leave default; Both Cloud and Local Storage
-+ **Cloud Storage Container**: the name of the container for database instance. The format is the following: Storage-IDENTITYDOMAIN/CONTAINERNAME. Replace the identitydomain value according to your environment and specify a container name. Container name is up to you. The container don't need to be created in advance, because -see below- there is an option to create automatically.
-+ **Cloud Storage User Name and Password**: the credentials for storage. Usually it is the same what was used to sign in to Oracle Cloud Services.
-+ **Create Cloud Storage Containers**: check in because the container does not exist what you specified above.
-+ **Character Set**: The database character set for the database. Leave default.
-+ **National Character Set**: The national character set is used for data stored in SQL NCHAR data types. Leave default.
-
-![](images/07.png)
-For more details about parameters see the [documentation](https://docs.oracle.com/cloud/latest/dbcs_dbaas/CSDBI/GUID-D4A35763-53ED-4FBB-97BF-0366F21B05E0.htm#CSDBI3401). Click **Next**.
-
-The final page is the summary about the configuration before submit the instance creation request. Click **Create** to start the provisioning of the new service instance.
-![](images/08.png)
-
-When the request has been accepted the Database Service Console page appears and shows the new instance. The instance now is in Maintenance (Progress) mode. Click on In Progress to get more information about the status.
-![](images/09.png)
+![](jpimages/dbcs-create01.jpg)
 
 
+Database Cloud Service コンソール画面が表示される。ここでインスタンスの作成のために **サービスの作成** をクリックする。
+
+![](jpimages/dbcs-create02.jpg)
+
+
+サブスクリプション・タイプを選択する。
+- サービス・レベル: **Oracle Database Cloud Service**
+- 請求頻度: **月** (デフォルト)
+
+詳細なサブスクリプション・タイプは[documentation](https://docs.oracle.com/cloud/latest/dbcs_dbaas/CSDBI/GUID-F1E6807A-D283-4170-AB2B-9D43CD8DCD92.htm#CSDBI3395)を参照。
+
+![](jpimages/dbcs-create03.png)
+
+
+ソフトウェア・リリースを選択する。
+- **Oracle Database 12cリリース1**
+
+![](jpimages/dbcs-create04.png)
+
+
+ソフトウェア・エディションを選択する。
+Database Cloud Service では、インスタンス作成時に以下のエディションが選択可能
+- Standard Edition
+- Enterprise Edition
+- Enterprise Edition - High Performance
+- Enterprise Edition - Extreme Performance
+
+この中から **Enterprise Edition** を選択する。
+
+![](jpimages/dbcs-create05.png)
+
+
+最後にサービス詳細では、以下のパラメータを入力する
+
+- **サービス名**: サービス・インスタンスの名前 (例. techcoDB)
+- **説明**: サービスに関する説明
+- **コンピュート・シェイプ**: OCPU の数とメモリの容量 (デフォルトを選択)
+- **タイムゾーン**: タイムゾーンを選択 (日本標準時を選択)
+- **SSH 公開鍵**: 仮想マシンにアップロードする公開鍵を指定する。秘密鍵を利用して SSH接続 によりアクセスできる。 **新規鍵の作成** を選択するとキー・ペアが作成されてダウンロードできる。ダウンロードしたキー・ペアは `<クローンしたGitリポジトリ>/cloud-utils` フォルダに展開する。(後の工程で使用)
+
+![](jpimages/dbcs-create06.jpg)
+
+![](jpimages/dbcs-create07.jpg)
+
+ターミナルを開き、Open a terminal and change to folder `<クローンしたGitリポジトリ>/cloud-utils` フォルダへ移動する。キー・ペアを含むアーカイブファイル(*sshkeybundle.zip*)を展開し、秘密鍵のアクセス権限の変更を行う。
+
+```bash
+$ [oracle@localhost Desktop]$ cd /<クローンしたGitリポジトリ>/cloud-utils
+$ [oracle@localhost cloud-utils]$ unzip sshkeybundle.zip
+      Archive:  sshkeybundle.zip
+      inflating: privateKey              
+      inflating: publicKey
+$ [oracle@localhost cloud-utils]$ chmod 600 privateKey
+```
+
+- **管理パスワード**: データベース・インスタンスのシステム・パスワード
+- **データベース名 (SID)**: コンテナ・データベース名
+- **PDB 名**: プラガブル・データベース名 (デフォルト:PDB1）
+- **バックアップの保存先**: デフォルトのまま (クラウド・storageとローカル・ストレージ両方)
+- **クラウド・ストレージ・コンテナ**: データベース・インスタンス用のストレージ・コンテナ名。次のフォーマットで入力する: `Storage-IDENTITYDOMAIN/CONTAINERNAME`
+- **クラウド・ストレージ・ユーザー名/パスワード**: Storage Cloud Service のアクセス・ユーザ及びパスワード
+- **クラウド・ストレージ・コンテナの作成**: チェックする (コンテナが存在しない場合に作成する)
+- **文字セット**: データベースの文字セット (デフォルト: AL32UTF8)
+- **各国語文字セット**: SQL NCHAR データ・タイプ使用する文字セット (デフォルト: AL16UTF16)
+
+![](jpimages/dbcs-create08.png)
+
+各パラメータの詳細は[documentation](https://docs.oracle.com/cloud/latest/dbcs_dbaas/CSDBI/GUID-D4A35763-53ED-4FBB-97BF-0366F21B05E0.htm#CSDBI3401)を参照。**次** をクリックする。
+
+
+最後のページは構成に関するサマリーが表示される。ここでインスタンスの作成リクエストのサブミット前に確認を行う。**作成** をクリックするとサービス・インスタンスの作成が開始する。
+
+![](jpimages/dbcs-create09.png)
+
+
+
+![](jpimages/dbcs-create10.png)
+
+![](jpimages/dbcs-create11.jpg)

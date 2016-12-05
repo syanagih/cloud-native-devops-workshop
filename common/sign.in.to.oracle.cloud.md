@@ -1,18 +1,27 @@
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 -----
-## Sign In to Oracle Cloud ##
+## Oracle Cloud へのサイン・イン
 
-1. Open a browser and go to [cloud.oracle.com](https://cloud.oracle.com). Click **Sign In**.
-![cloud.oracle.com](images/sign.01.cloud.oracle.com.png)
+1.　ブラウザから[cloud.oracle.com](https://cloud.oracle.com/ja_JP/home)を開き、**サイン・イン** をクリックする
 
-2. Select the datacenter and click **My Services**.
-![](images/sign.02.select.datacenter.png)
+![](jpimages/sign01.jpg)
 
-3. Enter the identity domain and click **Go**.
-![](images/sign.03.identity.domain.png)
 
-4. Enter username and password of user with Service Administrator role. Click **Sign In**.
-![](images/sign.04.credentials.png)
+2.　データ・センターを選択肢、**マイ・サービス** をクリックする
 
-5. On the Dashboard there are predefined tiles for different services. If the shortcut doesn't appear for a service click **Customize Dashboard** and mark the service to show on the dashboard.
-![](images/sign.05.dashboard.png)
+![](jpimages/sign02.jpg)
+
+
+3.　アイデンティティ・ドメイン名を入力し、**実行** をクリックする
+
+![](jpimages/sign03.jpg)
+
+
+4.　サービス管理者ロールをもつユーザ名とパスワードを入力するし、**サインイン** をクリックする
+
+![](jpimages/sign04.jpg)
+
+
+5.　ダッシュボード画面画面には、事前構成された複数のクラウド・サービスのタイルが表示される。このタイルの表示を変更する場合は、**ダッシュボードのカスタマイズ** をクリックし、表示するサービスにチェックする。
+
+![](jpimages/sign05.jpg)

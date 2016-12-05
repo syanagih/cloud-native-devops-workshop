@@ -1,230 +1,285 @@
 ![](../common/images/customer.logo.png)
 ---
-# ORACLE Public Cloud Service tutorial #
+# ORACLE Public Cloud Service tutorial
 -----
-## Deploy Tomcat based application to Application Container Cloud Service ##
+## Tomcat ベースのアプリケーションを Application Container Cloud Service へデプロイ
 
-### About this tutorial ###
-Oracle Application Container Cloud Service includes Oracle Java SE Cloud Service and Oracle Node Cloud Service. It provides a lightweight infrastructure so that you can run Java SE 7, Java SE 8, and Node.js applications in the Oracle Cloud.
+### 説明
 
-This tutorial demonstrates how to 
+Application Container Cloud Service は Java SE Cloud Service, Node CLoud Service 及び PHP Cloud Service を含んでいる。Application Container Cloud Service は 軽量なアプリケーション実行環境の基盤を提供しており、Oracle Cloud 上で Java SE 7, Java SE 8, Node.js そして PHP のアプリケーションを稼働させる事ができる。
 
-+ package your existing Tomcat (Java SE) based solution to Application Container Cloud Service
-+ deploy application to Application Container Cloud Service
-	
-### Prerequisites ###
+### チュートリアルについて
+このチュートリアルは、以下を実施する:
 
-- Oracle Cloud Services account including Application Cloud Container Service.
+- 既存の Tomcat 環境を Application Container Cloud Service 用にパッケージする
+- Application Container Cloud Service へデプロイする
 
-### Steps ###
+### 前提
 
-#### Deploy Tomcat Sample Application on-premise ####
+- Application Container Cloud Service が利用できるアカウントを保有している事
 
-Download Apache Tomcat 8.5.6 into folder `/u01` from [http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz](http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz). If the direct link doesn't work please find the right download location of the latest or desired version of Tomcat on [https://tomcat.apache.org/](https://tomcat.apache.org/).
+### 手順
 
-	[oracle@localhost Desktop]$ cd /u01
-	[oracle@localhost u01]$ wget http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz -P /u01/
-	--2016-10-20 02:45:08--  http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz
-	Resolving www-proxy.us.oracle.com (www-proxy.us.oracle.com)... 148.87.19.20
-	Connecting to www-proxy.us.oracle.com (www-proxy.us.oracle.com)|148.87.19.20|:80... connected.
-	Proxy request sent, awaiting response... 200 OK
-	Length: 9304958 (8.9M) [application/x-gzip]
-	Saving to: ‘/u01/apache-tomcat-8.5.6.tar.gz’
-	
-	100%[====================================================================================================================>] 9,304,958   2.87MB/s   in 3.1s   
-	
-	2016-10-20 02:45:12 (2.87 MB/s) - ‘/u01/apache-tomcat-8.5.6.tar.gz’ saved [9304958/9304958]
-	
-	[oracle@localhost u01]$ 
+#### オンプレミスでサンプル・アプリケーションを Tomcat にデプロイ
 
-Extraxt the archive into `/u01`.
+`/u01` フォルダに Apache Tomcat 8.5.6 を 次の場所からダウンロードする。
+-  [http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz](http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz)
 
-	[oracle@localhost u01]$ tar -zvxf /u01/apache-tomcat-8.5.6.tar.gz -C /u01
-	apache-tomcat-8.5.6/conf/
-	apache-tomcat-8.5.6/conf/catalina.policy
-	apache-tomcat-8.5.6/conf/catalina.properties
-	apache-tomcat-8.5.6/conf/context.xml
-	...
-	...
-	...
-	apache-tomcat-8.5.6/bin/setclasspath.sh
-	apache-tomcat-8.5.6/bin/shutdown.sh
-	apache-tomcat-8.5.6/bin/startup.sh
-	apache-tomcat-8.5.6/bin/tool-wrapper.sh
-	apache-tomcat-8.5.6/bin/version.sh
-	[oracle@localhost u01]$ 
+上記リンクが切れている場合は、Tomcat サイト ( [https://tomcat.apache.org/](https://tomcat.apache.org/)) で最新のバージョン、または求めているバージョンの適切なダウンロード・リンクを見つける。
 
-Now start Tomcat server using its `startup.sh` script:
+```bash
+$ cd /u01
+$ wget http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz -P /u01/
+--2016-12-03 22:36:23--  http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz
+archive.apache.org (archive.apache.org) をDNSに問いあわせています... 163.172.17.199
+archive.apache.org (archive.apache.org)|163.172.17.199|:80 に接続しています... 接続しました。
+HTTP による接続要求を送信しました、応答を待っています... 200 OK
+長さ: 9304958 (8.9M) [application/x-gzip]
+`/u01/apache-tomcat-8.5.6.tar.gz' に保存中
 
-	[oracle@localhost u01]$ apache-tomcat-8.5.6/bin/catalina.sh start
-	Using CATALINA_BASE:   /u01/apache-tomcat-8.5.6
-	Using CATALINA_HOME:   /u01/apache-tomcat-8.5.6
-	Using CATALINA_TMPDIR: /u01/apache-tomcat-8.5.6/temp
-	Using JRE_HOME:        /usr/java/latest
-	Using CLASSPATH:       /u01/apache-tomcat-8.5.6/bin/bootstrap.jar:/u01/apache-tomcat-8.5.6/bin/tomcat-juli.jar
-	Tomcat started.
-	[oracle@localhost u01]$ 
+apache-tomcat-8.5.6.tar.gz                100%[==================================================================================>]   8.87M   111KB/s    in 53s
 
-Open browser to check Tomcat is running. Hit http://localhost:8080/ 
+2016-12-03 22:37:17 (172 KB/s) - `/u01/apache-tomcat-8.5.6.tar.gz' へ保存完了 [9304958/9304958]
+```
 
-Open a browser and hit the following URL: `http://localhost:8080`
-You should now see the home page of Apache Tomcat server.
-![](images/01.localhost.png)
+`/u01` にダウンロードしたアーカイブファイルを展開する。
 
-The next step is to build the sample SpringBoot application. Change the directory to `GIT_REPO_LOCAL_CLONE/springboot-sample` and run `mvn install`.
+```bash
+$ tar zxvf apache-tomcat-8.5.6.tar.gz -C /u01
+apache-tomcat-8.5.6/conf/
+apache-tomcat-8.5.6/conf/catalina.policy
+apache-tomcat-8.5.6/conf/catalina.properties
+apache-tomcat-8.5.6/conf/context.xml
+apache-tomcat-8.5.6/conf/jaspic-providers.xml
+apache-tomcat-8.5.6/conf/jaspic-providers.xsd
+apache-tomcat-8.5.6/conf/logging.properties
+apache-tomcat-8.5.6/conf/server.xml
+apache-tomcat-8.5.6/conf/tomcat-users.xml
+apache-tomcat-8.5.6/conf/tomcat-users.xsd
+apache-tomcat-8.5.6/conf/web.xml
+apache-tomcat-8.5.6/bin/
+apache-tomcat-8.5.6/lib/
+apache-tomcat-8.5.6/logs/
+apache-tomcat-8.5.6/temp/
+apache-tomcat-8.5.6/webapps/
+apache-tomcat-8.5.6/webapps/ROOT/
+...
+...
+...
+...
+apache-tomcat-8.5.6/bin/catalina.sh
+apache-tomcat-8.5.6/bin/configtest.sh
+apache-tomcat-8.5.6/bin/daemon.sh
+apache-tomcat-8.5.6/bin/digest.sh
+apache-tomcat-8.5.6/bin/setclasspath.sh
+apache-tomcat-8.5.6/bin/shutdown.sh
+apache-tomcat-8.5.6/bin/startup.sh
+apache-tomcat-8.5.6/bin/tool-wrapper.sh
+apache-tomcat-8.5.6/bin/version.sh
+```
 
-	[oracle@localhost u01]$ cd /u01/content/cloud-native-devops-workshop/springboot-sample/
-	[oracle@localhost springboot-sample]$ mvn install
-	[INFO] Scanning for projects...
-	Downloading: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-parent/1.3.3.RELEASE/spring-boot-starter-parent-1.3.3.RELEASE.pom
-	Downloaded: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-parent/1.3.3.RELEASE/spring-boot-starter-parent-1.3.3.RELEASE.pom (7 KB at 11.3 KB/sec)
-	...
-	...
-	...
-	Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/shared/file-management/1.1/file-management-1.1.jar (31 KB at 13.7 KB/sec)
-	[INFO] Reading assembly descriptor: assembly.xml
-	[INFO] Building zip: /u01/content/cloud-native-devops-workshop/springboot-sample/target/springbootdemo-0.0.1.zip
-	[INFO] 
-	[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ springbootdemo ---
-	Downloading: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.6/commons-codec-1.6.pom
-	Downloaded: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.6/commons-codec-1.6.pom (11 KB at 28.5 KB/sec)
-	Downloading: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/0.4/maven-shared-utils-0.4.pom
-	Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/0.4/maven-shared-utils-0.4.pom (4 KB at 41.6 KB/sec)
-	Downloading: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.15/plexus-utils-3.0.15.pom
-	Downloaded: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.15/plexus-utils-3.0.15.pom (4 KB at 39.9 KB/sec)
-	Downloading: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.6/commons-codec-1.6.jar
-	Downloading: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/0.4/maven-shared-utils-0.4.jar
-	Downloading: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.15/plexus-utils-3.0.15.jar
-	Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-utils/0.4/maven-shared-utils-0.4.jar (152 KB at 538.3 KB/sec)
-	Downloaded: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.6/commons-codec-1.6.jar (228 KB at 800.4 KB/sec)
-	Downloaded: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.15/plexus-utils-3.0.15.jar (234 KB at 344.2 KB/sec)
-	[INFO] Installing /u01/content/cloud-native-devops-workshop/springboot-sample/target/springbootdemo-0.0.1.war to /home/oracle/.m2/repository/com/example/springboot/springbootdemo/0.0.1/springbootdemo-0.0.1.war
-	[INFO] Installing /u01/content/cloud-native-devops-workshop/springboot-sample/pom.xml to /home/oracle/.m2/repository/com/example/springboot/springbootdemo/0.0.1/springbootdemo-0.0.1.pom
-	[INFO] Installing /u01/content/cloud-native-devops-workshop/springboot-sample/target/springbootdemo-0.0.1.zip to /home/oracle/.m2/repository/com/example/springboot/springbootdemo/0.0.1/springbootdemo-0.0.1.zip
-	[INFO] ------------------------------------------------------------------------
-	[INFO] BUILD SUCCESS
-	[INFO] ------------------------------------------------------------------------
-	[INFO] Total time: 01:31 min
-	[INFO] Finished at: 2016-10-20T03:05:21-07:00
-	[INFO] Final Memory: 29M/490M
-	[INFO] ------------------------------------------------------------------------
-	[oracle@localhost springboot-sample]$ 
+`catalina.sh` スクリプトを使用して Tomcat サーバを起動する。
 
-To deploy the application simply copy the application archive (`springbootdemo-0.0.1.war`) to the `TOMCAT_INSTALL_DIRECTORY/webapps` folder.
-	
-	[oracle@localhost springboot-sample]$ cp target/springbootdemo-0.0.1.war /u01/apache-tomcat-8.5.6/webapps
-	[oracle@localhost springboot-sample]$ 
+```bash
+$ ./apache-tomcat-8.5.6/bin/catalina.sh start
+Using CATALINA_BASE:   /u01/apache-tomcat-8.5.6
+Using CATALINA_HOME:   /u01/apache-tomcat-8.5.6
+Using CATALINA_TMPDIR: /u01/apache-tomcat-8.5.6/temp
+Using JRE_HOME:        /d/JAva/jdk1.8.0_102
+Using CLASSPATH:       /u01/apache-tomcat-8.5.6/bin/bootstrap.jar:/u01/apache-tomcat-8.5.6/bin/tomcat-juli.jar
+Tomcat started.
+```
 
-Now check the log file -using `tail`- about the successful deployment of sample application.
+ブラウザで次の URL を開き Tomca の稼働を確認する: `http://localhost:8080/`
 
-	[oracle@localhost springboot-sample]$ tail /u01/apache-tomcat-8.5.6/logs/catalina.out 
-	2016-10-20 03:08:25.556  INFO 6785 --- [ost-startStop-2] .s.AnnotationConfigWebApplicationContext : Found 1 annotated classes in package [com.example.springboot.config]
-	2016-10-20 03:08:25.616  INFO 6785 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Root mapping to handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
-	2016-10-20 03:08:25.616  INFO 6785 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/old] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
-	2016-10-20 03:08:25.616  INFO 6785 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/env] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
-	2016-10-20 03:08:25.617  INFO 6785 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/heap] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
-	2016-10-20 03:08:25.633  INFO 6785 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
-	2016-10-20 03:08:25.634  INFO 6785 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
-	2016-10-20 03:08:25.664  INFO 6785 --- [ost-startStop-2] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: WebApplicationContext for namespace 'appServlet-servlet': startup date [Thu Oct 20 03:08:25 PDT 2016]; parent: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@7f790486
-	2016-10-20 03:08:25.765  INFO 6785 --- [ost-startStop-2] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'appServlet': initialization completed in 215 ms
-	20-Oct-2016 03:08:25.771 INFO [localhost-startStop-2] org.apache.catalina.startup.HostConfig.deployWAR Deployment of web application archive /u01/apache-tomcat-8.5.6/webapps/springbootdemo-0.0.1.war has finished in 5,937 ms
-	[oracle@localhost springboot-sample]$ 
+Apache Tomcat サーバのホーム画面が確認できる。
 
-You can see in the last two log entries about springbootdemo-0.0.1.war deployment. Go back to your browser and enter the sample application's URL: [http://localhost:8080/springbootdemo-0.0.1](http://localhost:8080/springbootdemo-0.0.1).
-
-![](images/02.springboot.local.png)
-
-Finally stop Tomcat server - using `catalina.sh` before preparing it to deploy on Application Container Cloud Service.
-
-	[oracle@localhost u01]$ apache-tomcat-8.5.6/bin/catalina.sh stop
-	Using CATALINA_BASE:   /u01/apache-tomcat-8.5.6
-	Using CATALINA_HOME:   /u01/apache-tomcat-8.5.6
-	Using CATALINA_TMPDIR: /u01/apache-tomcat-8.5.6/temp
-	Using JRE_HOME:        /usr/java/latest
-	Using CLASSPATH:       /u01/apache-tomcat-8.5.6/bin/bootstrap.jar:/u01/apache-tomcat-8.5.6/bin/tomcat-juli.jar
-	[oracle@localhost u01]$ 
+![](jpimages/accs-tomcat01.jpg)
 
 
-#### Packaging Tomcat server and sample application for Application Cloud Container Service deployment ####
+次に Spring Boot サンプル・アプリケーションをビルドする。`<クローンしたGitリポジトリ>/springboot-sample` に移動し、`mvn-install` を実行する。
 
-Once your application has been tested locally, create an archive (.zip, .tgz, .tar.gz file) that includes the application, any dependent libraries, and the `manifest.json` file. When you upload your application to Oracle Application Container Cloud Service using the user interface, you must include a file called `manifest.json` in the application archive. If you use the REST API to upload the application, this file is still required but doesn’t have to be in the archive.
-The other file, `deployment.json`, is optional and is not included in the archive. You can specify the values in this file via the user interface, or you can upload the file using the REST API. In this tutorial shows the deployment using user interface.
+```bash
+$ cd springboot-sample
+$ mvn install$ mvn install
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building demo 0.0.1
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ springbootdemo ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] Copying 8 resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ springbootdemo ---
+[INFO] Changes detected - recompiling the module!
+...
+...
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 25.460 s
+[INFO] Finished at: 2016-12-03T22:58:14+09:00
+[INFO] Final Memory: 29M/261M
+[INFO] ------------------------------------------------------------------------
 
-Once you have developed your application, you need to decide how to include or reference any dependent libraries. For a Java application, you can do this by creating an uber JAR file or by using the classpath. Remember that the command used to launch your application is up to you.
+```
 
-You can launch directly by invoking `java` or use a shell script. The application is executed in a Linux container, so most of the rules that apply to running a command in Linux apply. In case of our Tomcat sample the application using a shell script. The command line for execution will be something like this:
+アプリケーションのデプロイは、アプリケーション・アーカイブファイル(`springbootdemo-0.0.1.war`) を `<Tomcatインストール・ディレクトリ>/webapps` フォルダにコピーで実施する。
 
-	sh bin/catalina.sh
+```bash
+$ cp -p target/springbootdemo-0.0.1.war /u01/apache-tomcat-8.5.6/webapps/
 
-To create `manifest.json` use your favorite text editor (e.g. vi, gedit). The tutorial will use vi.
+```
 
-	[oracle@localhost u01]$ vi /u01/apache-tomcat-8.5.6/manifest.json
+サンプル・アプリケーションのデプロイを `tail` コマンドでログファイルを確認する
 
-Press 'i' to edit file. Write or copy the the following content:
-	
-	{
-		"runtime": {
-		  "majorVersion": "8"
-		},
-		"command": "sh bin/catalina.sh run"
-	}
-	~                                                                                                                                                       
-	~                                                                                                                                                       
-	~                                                                                                                                                                                                                                                                                               
-	~                                                                                                                                                       
-	~                                                                                                                                                       
-	~                                                                                                                                                       
-	~                                                                                                                                                       
-	~                                                                                                                                                       
-	-- INSERT --
+```log
+2016-12-03 23:07:28.561  INFO 4892 --- [ost-startStop-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2016-12-03 23:07:28.616  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Root mapping to handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+2016-12-03 23:07:28.617  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/env] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+2016-12-03 23:07:28.617  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/heap] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+2016-12-03 23:07:28.617  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/cpu] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+2016-12-03 23:07:28.669  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2016-12-03 23:07:28.669  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2016-12-03 23:07:28.675  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler]
+2016-12-03 23:07:28.935  INFO 4892 --- [ost-startStop-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2016-12-03 23:07:29.272  INFO 4892 --- [ost-startStop-2] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2016-12-03 23:07:29.355  INFO 4892 --- [ost-startStop-2] com.example.springboot.DemoApplication   : Started DemoApplication in 8.187 seconds (JVM running for 1415.866)
+2016-12-03 23:07:29.508  INFO 4892 --- [ost-startStop-2] org.apache.cxf.endpoint.ServerImpl       : Setting the server's publish address to be /
+2016-12-03 23:07:29.622  INFO 4892 --- [ost-startStop-2] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'appServlet': initialization started
+2016-12-03 23:07:29.627  INFO 4892 --- [ost-startStop-2] .s.AnnotationConfigWebApplicationContext : Refreshing WebApplicationContext for namespace 'appServlet-servlet': startup date [Sat Dec 03 23:07:29 JST 2016]; parent: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@dbc9f2f
+2016-12-03 23:07:29.638  INFO 4892 --- [ost-startStop-2] .s.AnnotationConfigWebApplicationContext : Found 1 annotated classes in package [com.example.springboot.config]
+2016-12-03 23:07:29.843  INFO 4892 --- [ost-startStop-2] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'appServlet': initialization completed in 221 ms
+2016-12-03 23:07:29.856  INFO 4892 --- [ost-startStop-2] org.apache.cxf.endpoint.ServerImpl       : Setting the server's publish address to be /
+03-Dec-2016 23:07:29.944 情報 [localhost-startStop-2] org.apache.catalina.startup.HostConfig.deployWAR Deployment of web application archive D:\msys64\u01\apache-tomcat-8.5.6\webapps\springbootdemo-0.0.1.war has finished in 13,352 ms
+```
 
-Use **Esc** then **Shift+Q** then write `wq` and hit Enter to save the file. This is the minimum (mandatory) version of metadata file. There are other useful properties for example: startUpTime, release, notes, etc. See [documentation](http://docs.oracle.com/cloud/latest/apaas_gs/DVCJV/GUID-D98FB882-5E58-4318-9DCB-4B404FD86E14.htm#DVCJV-GUID-D98FB882-5E58-4318-9DCB-4B404FD86E14) for further details.
+ログにエントリーされている情報から ***springbootdemo-0.0.1.war*** がデプロイされている事が確認できる。
 
-Why we use `catalina.sh`? Tomcat needs to be started as a foreground process which means you cannot use `startup.sh` because that will background Tomcat and the container will exit. Instead you must use directly sh `catalina.sh run` to launch Tomcat in the foreground.
+ブラウザに戻り、次のサンプル・アプリケーション URL を開く: [http://localhost:8080/springbootdemo-0.0.1](http://localhost:8080/springbootdemo-0.0.1)
 
-Now package the Tomcat server which is already contains the sample application war file. The package name will be **tomcat.sample.tgz**:
+![](jpimages/accs-tomcat02.jpg)
 
-	[oracle@localhost u01]$ cd /u01/apache-tomcat-8.5.6/ && tar -zcvf ../tomcat.sample.tgz * && cd ..
-	bin/
-	bin/version.sh
-	bin/bootstrap.jar
-	...
-	...
-	...
-	work/Catalina/localhost/host-manager/
-	work/Catalina/localhost/examples/
-	work/Catalina/localhost/docs/
-	
-Check the result using `ls`. You have the **tomcat.sample.tgz** in folder `/u01`:
+最後に、Application Container Cloud Service にデプロイする準備の前に、 `catalina.sh` を使用して Tomcat を停止する。
 
-	[oracle@localhost u01]$ ls
-	apache-tomcat-8.5.6  content  oepe-12.2.1.4.201608161938  python            tomcat.sample.tgz
-	app                  dpct     psmcli.zip                  Python-3.5.2.tgz  wins
-	[oracle@localhost u01]$ 
+```bash
+$ ./apache-tomcat-8.5.6/bin/catalina.sh stop
+Using CATALINA_BASE:   /u01/apache-tomcat-8.5.6
+Using CATALINA_HOME:   /u01/apache-tomcat-8.5.6
+Using CATALINA_TMPDIR: /u01/apache-tomcat-8.5.6/temp
+Using JRE_HOME:        /d/JAva/jdk1.8.0_102
+Using CLASSPATH:       /u01/apache-tomcat-8.5.6/bin/bootstrap.jar:/u01/apache-tomcat-8.5.6/bin/tomcat-juli.jar
+```
 
-#### Deploy to Application Cloud Container Service ####
-The application now is ready to deploy. [Sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com](https://cloud.oracle.com). On the dashboard click **Instances** on Application Container Cloud Service tile to open Console.
-![](images/03.dashboard.png)
+#### Tomcat とサンプル・アプリケーションを Application Conytainer Cloud Service のデプロイ用にパッケージ
 
-If this is the first time when you access Application Container Cloud Service console most likely the Welcome page will be displayed. In this case click **Applications** to skip usefull informations and links.
-![](images/04.console.welcome.png)
+ローカルでアプリケーションのテストを行ったら、アプリケーション、依存するライブラリ、そして `manifest.json` を含むアーカイブファイル(.zip, .tgz, .tar.gz)を作成する。Application Container Cloud Service に UI を用いてアプリケーションをアップロードする際には、アプリケーション・アーカイブファイルの中に `manifest.json` を必ず含めておかなければならない。REST API でアプリケーションをアップロードする場合は、`manifest.json` が必要だがアプリケーション・アーカイブファイルの中に含めておかなくてもよい。もう一つのファイルである `deployment.json` はオプションであり、アーカイブには含まれない。このファイルは、UI から指定するか、または REST APIによりファイルをアップロードする事とができる。このチュートリアルでは、UI によるデプロイを行う。
 
-On the Application Container Cloud service console click **Create**.
-![](images/05.accs.console.png)
+アプリケーションを開発する時に、依存するライブラリの含めるか参照するかを決める必要がある。Java アプリケーションでは、Uber JAR を作るか、またはクラスパスを使用するかという方法がある。そして、アプリケーションを起動するコマンドを忘れてなならない。
 
-Click Java SE.
-![](images/06.java.se.png)
+アプリケーションを起動する際には、直接 `java` コマンドで起動するか、シェル・スクリプトを使用するかがある。アプリケーションは、Linux コンテナの中で実行される。そのため、Linux のコマンドを使用する。この Tomcat サンプル・アプリケーションでは、シェル・スクリプトを使用している。実行するコマンドラインは次のようになる:
 
-Provide application name. This will be the ACCS instance name. Select subscription type. Upload the `tomcat.sample.tgz` archive created above. You can set the instance (OCPU) and memory size for the deployment. Leave the  default. Click **Create**.
-![](images/07.create.application.png)
+```sh
+sh bin/catalina.sh
+```
 
-Click OK to confirm the acknowledgement and the detail page of the new instance appears. Wait until the application will be created. You can use the refresh button to get the latest information about the progress. Once the provisioning is ready the application URL will be enabled and you can click to open the application.
-![](images/08.deploying.png)
+`manifest.json` を作成するには、好みのテキスト・エディタを使用する (vi や gedit など)。このチュートリアルでは、vi を使用する。
 
-The URL goes to the default Tomcat page which already shows the server is up and running.
-![](images/09.tomcat.mgmt.png)
+```bash
+$ vi /u01/apache-tomcat-8.5.6/manifest.json
+```
 
-To hit the sample application append `/springbootdemo-0.0.1` at the and of the URL.
-![](images/10.springboot.accs.png)
+`i` を押し、入力モードにして、次の内容を入力する:
 
-Congratulate! You have successfully deployed the SpringBoot demo application on traditional (Web Archive) way using Tomcat container.
+```json
+{
+  "runtime": {
+    "majorVersion": "8"
+  },
+  "command": "sh bin/catalina.sh run"
+}
+```
+
+**Esc** を押してノーマルモードに戻り、、そして**:** を押し、コマンドラインモードにして、 `wq` を入力してこのファイルを保存する。このファイルが最低限必要なメタデータ・ファイルである。その他の属性値、例えば ***startUpTime***, ***release***, ***notes*** などは、[documentation](http://docs.oracle.com/cloud/latest/apaas_gs/DVCJV/GUID-D98FB882-5E58-4318-9DCB-4B404FD86E14.htm#DVCJV-GUID-D98FB882-5E58-4318-9DCB-4B404FD86E14) を参照。
+
+なぜ `catalina.sh` を使用するか？ Tomcat は フォアグラウンド・プロセスとして起動する必要があるので、`startup.sh` は使用できない。startup.sh は Tomcat をバックグラウンド・プロセスとし、コンテナがexitするためである。代わりに、Tomcat をフォアグラウンドで起動する `catalina.sh run` を使用する必要がある。
+
+Tomcat はサンプル・アプリケーションの WAR ファイルを含んでいる。そこで、**tomcat.sample.tgz** という名前でパッケージを行う。
+
+```bash
+$ cd /u01/apache-tomcat-8.5.6/ && tar -zcvf ../tomcat.sample.tgz * && cd ..
+bin/
+bin/version.sh
+bin/bootstrap.jar
+...
+...
+...
+work/Catalina/localhost/host-manager/
+work/Catalina/localhost/examples/
+work/Catalina/localhost/docs/
+```
+
+`ls` コマンドで結果を確認すると、`/u01` フォルダに **tomcat.sample.tgz** が生成されている。
+
+```bash
+$ ls /u01
+apache-tomcat-8.5.6  apache-tomcat-8.5.6.tar.gz  tomcat.sample.tgz
+```
+
+#### Application Container Cloud Service へのデプロイ
+
+デプロイするアプリケーションの準備はできている。Oracle Cloud へ[サインイン](../common/sign.in.to.oracle.cloud.md) する [(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。
+ログイン後、ダッシュボード画面の Application Container Cloud Service のドロップダウンメニューから **サービス・コンソールを開く** を選択する。
+
+![](jpimages/accs-tomcat03.jpg)
+
+
+Application Container Cloud Service コンソール画面が表示される。初めてコンソール画面を開く場合、ウェルカム・ページが表示される。この場合は、**コンソールに移動** をクリックする。
+
+![](jpimages/accs-tomcat04.jpg)
+
+
+
+Application Container Cloud サービス・コンソールで **Create Application** をクリックする。
+
+![](jpimages/accs-tomcat05.jpg)
+
+
+Java SE をクリックする。
+
+![](jpimages/accs-tomcat06.jpg)
+
+次の当たりを入力する:
+
+- Name: アプリケーション名を指定する。これが、ACCSのインスタンス名になる。
+- Subscription: 月単位/時間単位課金 (デフォルトのまま)
+- Application Archive: `tomcat.sample.tgz` をアップロードする
+- Instance: インスタンスとメモリのサイズを設定 (デフォルトのまま)
+
+**Create** をクリックする。
+
+![](jpimages/accs-tomcat07.jpg)
+
+確認のため **OK** をクリックする。
+
+![](jpimages/accs-tomcat08.jpg)
+
+
+詳細ページに新しいインスタンスが表示される。アプリケーションが作成されるまで待つ。右上角のリフレッシュ・ボタンで最新状態に更新できる。プロビジョニングができると、アプリケーションの URL が表示され、クリックするとアプリケーションが開かれる。
+
+![](jpimages/accs-tomcat09.jpg)
+
+
+URL を遷移すると、既にサーバが起動している Tomcat のホーム画面が表示される。
+
+![](jpimages/accs-tomcat10.jpg)
+
+
+URL の末尾に `/springbootdemo-0.0.1` を加えると、アプリケーション画面が表示される。
+
+
+![](jpimages/accs-tomcat11.jpg)

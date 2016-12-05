@@ -1,57 +1,57 @@
 ![](common/images/customer.logo.png)
 ---
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 
-## Introduction ##
+## 説明
 
-Oracle Cloud is the industry’s broadest and most integrated public cloud. It offers best-in-class services across software as a service (SaaS), platform as a service (PaaS), and infrastructure as a service (IaaS), and even lets you put Oracle Cloud in your own data center. Oracle Cloud helps organizations drive innovation and business transformation by increasing business agility, lowering costs, and reducing IT complexity. The workshop content shows different aspects of Application Development in the cloud with different set of Oracle Cloud Services.
+Oracle Cloud は、様々な業界で使用され、最も統合されている Public Cloud である。Oracle Cloud は、Software as a Service (SaaS), Platform as a Service (PaaS), そして、Infrastructure as a Service (IaaS) を跨って、また顧客のデータセンターに Oracle Cloud を配置して、最高クラスのサービスを提供している。Oracle Cloud は、ビジネスの俊敏性をあげ、コストを抑制し、また IT の複雑性を提言する事によりイノベーションやビジネスの変革の手助けをしている。このワークショップの内容は、様々なOracle Cloud Services 使い、Cloud 環境上におけるアプリケーション開発に関して様々な観点・考え方を紹介するものである。
 
-### Prerequisites ###
+### 前提
 
-The workshop is intended to work with an Oracle PaaS trial account. To get an account look into [here](common/request.for.trial.md). Get the following account details ready to complete the tutorial and replace to your values when it is required:
+このワークショップは、Oracle PaaS トライアル・アカウントを保有して実施する事になっている。トライアル・アカウントを取得するためには、[トライアルの申請方法](common/request.for.trial.md) を参照して実施する。チュートリアルを実施するために、次の情報を確認しておく。そして、チュートリアルで必要になったら自身の情報で置き換えて実施する。
 
-+ Oracle Cloud account **username** and **password**
-+ Oracle Cloud **identity domain**
-+ **Data center/region**
+- Oracle Cloud アカウント **ユーザ名** と **パスワード**
+- Oracle Cloud **アイデンティティ・ドメイン名**
+- **データセンター / リージョン**
 
-NOTE: Before you start to use your new Oracle Public Cloud services make sure that the replication policy has been set for your account. Otherwise you can not create storage container which is necessary for most of the services. See [Selecting a Replication Policy for Oracle Storage Cloud Service](https://docs.oracle.com/cloud/latest/storagecs_common/CSSTO/GUID-5D53C11F-3D9E-43E4-8D1D-DDBB95DEC715.htm).
+NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなたのアカウントにレプリケーション・ポリシーが設定されているかを確認しておく。もし設定されていない場合は、ほとんどのクラウド・サービスで必要になる Storage Cloud コンテナ を作成する事ができない。詳細は次のドキュメント: [Selecting a Replication Policy for Oracle Storage Cloud Service](https://docs.oracle.com/cloud/latest/storagecs_common/CSSTO/GUID-5D53C11F-3D9E-43E4-8D1D-DDBB95DEC715.htm) を参照。
 
-### Important ###
+### 重要事項
 
-During the execution you will create several public cloud service instances what will be available on the world wide web. Even if these instances are for demo purposes keep in mind it is not a best practice to use weak or known (stored here in the tutorial) passwords especially in such open environment. Thus this workshop content does not recommend any password so you need to define those. You will be asked to provide password at certain points and please remember them  for  later usage.
+このワークショップの中で、パブリックなインターネット上で利用可能となるサービス・インスタンスをいくつか作成する事になる。これらのインスタンスが、たとえデモンストレーション目的であったとしても、オープンな環境で脆弱であったり一般的なパスワードを使わないというベスト・プラクティスを忘れてはいけない。そのため、このワークショップではどんなパスワードも指定しないので、自身でパスワードを定義する必要がある。チュートリアルの中でパスワードを求められる箇所があるが、後続の手順を実施のためにパスワードを覚えておく必要がある。
 
-The content contains several independent modules that cover different aspects of the application development in the Oracle Cloud. These modules could be executed independently unless you find in the Prerequisites that they are dependent on each other.
+このワークショップは、Oracle Cloud 上でのアプリケーション開発の異なる観点毎に独立したいくつかのチュートリアルで成り立っている。これらのチュートリアルは、依存する前提事項がなければ、独立して実施する事ができる。
 
 ----
 
-####Support SpringBoot application development lifecycle using Oracle Developer Cloud Service, Application Container Cloud Service and Oracle Enterprise Pack For Eclipse####
+#### Developer Cloud Service, Application Container Cloud Service, Oracle Enterprise Pack For Eclipse を用いた Spring Boot アプリケーション開発ライフサイクルの支援
 
-+ [Create Oracle Developer Cloud Service project for SpringBoot application](springboot-sample/create.devcs.project.md)
-+ [Create continuous build integration using Oracle Developer Cloud Service and Oracle Application Container Cloud Service](springboot-sample/devcs.accs.ci.md)
-+ [Using Eclipse IDE (Oracle Enterprise Pack for Eclipse) with Oracle Developer Cloud Service](oepe/setup.oepe.md)
+- [Spring Boot アプリケーション用のDeveloper Cloude Service プロジェクトの作成](springboot-sample/create.devcs.project.md)
+- [Developer Cloud Service と Application Container Cloud Service を用いた継続的ビルド・インテグレーションの作成](springboot-sample/devcs.accs.ci.md)
+- [Developer Cloud Service を用いた Eclipse 統合開発環境 (Oracle Enterprise Pack for Eclipse) の利用](oepe/setup.oepe.md)
 
-####Bind Frontend Application running on lightweight container in Oracle Appplication Container Cloud with backend resources running on Java Cloud Service####
+#### Application Container Cloud Service 上の軽量コンテナで稼働するフロントエンド・アプリケーションと Java Cloud Service 上で稼働するバックエンド・リソースのバインド
 
-+ [Implement new function (REST client) in SpringBoot sample application using Service Bindings to access Oracle Java Cloud Services](devops-bind/README.md)
+- [Eclipse IDE (Oracle Enterprise Pack for Eclipse) と Developer Cloud Service を用いた開発ライフサイクル管理](devops-bind/README.md)
 
-####Perform basic monitoring of application run inside Application Container Cloud thrugh diagnostic capabilities of Java Mission Control and Java Flight Recorder ####
+#### Java Mission Control と Java Flight Recorder の診断機能を用いた Application Container Cloud Service で稼働するアプリケーションのモニタリング
 
-+ [Monitor and tune SpringBoot application deployed on Oracle Application Container Cloud Service](monitor-tune/README.md)
++ [Application Conytainer Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
 
-####Integrate telemetry into continuous delivery and monitor an application using the Oracle Management Cloud####
+#### Integrate telemetry into continuous delivery and monitor an application using the Oracle Management Cloud
 + [Deploying APM Agent on Apache Tomcat based application and setting up Application Performance Monitoring](apm/README.md)
 
-####Run Lightweight Java container (Tomcat) in the  Oracle Application Container Cloud Service####
+#### Application Conainer Cloud Service での軽量 Java コンテナ(Tomcat) の実行
 
-+ [Deploy Apache Tomcat based application to Oracle Application Container Cloud](accs-tomcat/README.md)
-+ [Scale up/down Application Container Service using user interface and PaaS Service Manager (PSM) Command Line Interface (CLI) tool](accs-psm/README.md)
++ [Tomcat ベースのアプリケーションを Application Container Cloud Service へデプロイ](accs-tomcat/README.md)
++ [UI 及び PSM CLI を用いた Application Cloud Service のスケールアップ/スケールダウン](accs-psm/README.md)
 
-#### Deploy Java EE application to Oracle Java Cloud Service####
+#### Java Cloud Service への　Java EE アプリケーションのデプロイ
 
-+ [Create Database Cloud Service Instance using user interface](dbcs-create/README.md)
-+ [Create Java Cloud Service Instance using user interface](jcs-create/README.md)
-+ [Prepare Database Cloud Service Instance to store sample application's data](dbcs-prepare/README.md)
-+ [Deploy Java EE sample application to Oracle Java Cloud Service using Admin console](jcs-deploy/README.md)
+- [UI を用いた Database Cloud Service インスタンスの作成](dbcs-create/README.md)
+- [UI を用いた Java Cloud Service インスタンスの作成](jcs-create/README.md)
+- [TechCo (Java EE) サンプル・アプリケーション用 Database Cloud Service の準備](dbcs-prepare/README.md)
+- [TechCo (Java EE) サンプル・アプリケーションの Java Cloud Service へのデプロイ](jcs-deploy/README.md)
 
 ####Manage Oracle Java Cloud Service using UI and PaaS Service Manager####
 

@@ -2,14 +2,15 @@
 ---
 # ORACLE Cloud-Native DevOps workshop #
 
-## How to request for trial ##
+## トライアルの申請方法
 
-Open [cloud.oracle.com](https://cloud.oracle.com/home)
+[cloud.oracle.com](https://cloud.oracle.com/ja_JP/home) を開く。
 
-At top right corner click a button *Free Trial*
+右上角の ***無料トライアル*** をクリックする。
 
-Look at the left column called "Platform & Infrastructure" for "Oracle Cloud paaS and IaaS" and select "Try it"
 
-Login tou Your OTN account
+Look at the left column called **プラットフォームとインフラ** の項目を見つけ、**Oracle Cloud PaaSおよびIaaS** の **試してみる** を選択する。
 
-Follow 4 pages wizard and fill all requested information
+OTN アカウントでログインする。
+
+4 ページのウィザードに従い、全ての必須情報を入力する。

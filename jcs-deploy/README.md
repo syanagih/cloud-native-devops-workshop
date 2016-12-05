@@ -2,196 +2,229 @@
 ---
 # ORACLE Cloud-Native DevOps workshop #
 -----
-## Deploy TechCo (Java EE) Demo Application to Java Cloud Service ##
+## TechCo (Java EE) サンプル・アプリケーションの Java Cloud Service へのデプロイ
 
-### Introduction ###
-This section describes deploying and undeploying applications to an Oracle Java Cloud Service instance by using the WebLogic Server Administration Console. You cannot deploy and undeploy applications directly through the Oracle Java Cloud Service Console.
+### 説明
 
-You can use the WebLogic Server Administration Control graphical user interface to deploy and undeploy an application to an Oracle Java Cloud Service instance, just as you would deploy and undeploy the application to an on-premises service instance.
+WebLogic 管理コンソールを使用して Java Cloud Service に対するアプリケーションのデプロイとアンデプロイを行う。Java Cloud Service では、サービス・コンソールから直接アプリケーションのデプロイやアンデプロイは行えない。
 
-### About this tutorial ###
-This tutorial demonstrates how to:
-  
-+ create resource (Data Source) for Java Cloud Service using WebLogic console,
-+ deploy JEE application to Java Cloud Service using WebLogic console.
+Java Cloud Service では、オンプレミスのサービス・インスタンスにアプリケーションのデプロイやアンデプロイを行うとの同様に、WebLogic Server 管理コンソールの GUI を利用して Java Cloud Service にデプロイやアンデプロイを行う事ができる。
 
-### Prerequisites ###
+### このチュートリアルについて
+このチュートリアルは、以下を実施する:
 
-- [Prepared Database Cloud Service](../dbcs-prepare/README.md) instance which holds the TechCo Demo application's data.
-- Running [Java Cloud Service instance](../jcs-create/README.md) configured to access to the prepared Database Cloud Service
+- WebLogic 管理コンソールを使用して Java Cloud Service へリソース (データソース) を定義する
+- WebLogic 管理コンソールを使用して Java Cloud Service へ Java EE アプリケーションをデプロイする
 
-### Steps ###
+### 前提
 
-#### Build sample application ####
-Open a terminal and change to `GIT_REPO_LOCAL_CLONE/techco-app` folder and build the sample application.
+- チュートリアル: [TechCo (Java EE) サンプル・アプリケーション用 Database Cloud Service の準備](../dbcs-prepare/README.md) を実施し、TechCo サンプル・アプリケーションのデータの準備をデータベース・インスタンスに準備しておく事
+- チュートリアル: [UI を用いた Database Cloud Service インスタンスの作成](../jcs-create/README.md) を実施し、Database Cloud Service にアクセスするJava Cloud Service インスタンスが稼働している事
 
-    $ [oracle@localhost Desktop]$ cd /u01/content/cloud-native-devops-workshop/techco-app
-    $ [oracle@localhost techo-app]$ mvn install
+### 手順
+
+#### サンプル・アプリケーションのビルド
+ターミナルを開き `<クローンしたGitリポジトリ>/techco-app` フォルダに移動し、サンプル・アプリケーションをビルドする。
+
+```bash
+$ [oracle@localhost Desktop]$ cd /u01/content/cloud-native-devops-workshop/techco-app
+$ [oracle@localhost techo-app]$ mvn install
 Running the build you should see output similar to:
 
-    [oracle@localhost techo-app]$ mvn install
-    [INFO] Scanning for projects...
-    [INFO]                                                                         
-    [INFO] ------------------------------------------------------------------------
-    [INFO] Building TechCo-ECommerce 1.0-SNAPSHOT
-    [INFO] ------------------------------------------------------------------------
-    Downloading: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.4/maven-war-plugin-2.4.pom
-    Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.4/maven-war-plugin-2.4.pom (10 KB at 3.7 KB/sec)
-    ...
-    ...
-    ...
-    [INFO] Installing /u01/content/cloud-native-devops-workshop/techo-app/pom.xml to /home/oracle/.m2/repository/com/oracle/samples/TechCo-ECommerce/1.0-SNAPSHOT/TechCo-ECommerce-1.0-SNAPSHOT.pom
-    [INFO] ------------------------------------------------------------------------
-    [INFO] BUILD SUCCESS
-    [INFO] ------------------------------------------------------------------------
-    [INFO] Total time: 01:06 min
-    [INFO] Finished at: 2016-08-20T05:41:55-07:00
-    [INFO] Final Memory: 24M/491M
-    [INFO] ------------------------------------------------------------------------
-    [oracle@localhost techco-app]$
+[oracle@localhost techo-app]$ mvn install
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building TechCo-ECommerce 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+Downloading: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.4/maven-war-plugin-2.4.pom
+Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.4/maven-war-plugin-2.4.pom (10 KB at 3.7 KB/sec)
+...
+...
+...
+[INFO] Installing /u01/content/cloud-native-devops-workshop/techo-app/pom.xml to /home/oracle/.m2/repository/com/oracle/samples/TechCo-ECommerce/1.0-SNAPSHOT/TechCo-ECommerce-1.0-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 01:06 min
+[INFO] Finished at: 2016-08-20T05:41:55-07:00
+[INFO] Final Memory: 24M/491M
+[INFO] ------------------------------------------------------------------------
+[oracle@localhost techco-app]$
+```
 
-Now the web archive (war) is ready to deploy in the `target` folder.
+Now the web archive (war) is ready to deploy in the `target`フォルダの中にデプロイする事ができる Web Archive ファイル (WAR) が生成されている。
 
-#### Create Data Source for sample application ####
-[Sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign-in](https://cloud.oracle.com/sign-in). Using the dashboard open the Java Cloud Service Console.
+#### サンプル・アプリケーション用のデータソースの作成
+Oracle Cloud へ[サインイン](../common/sign.in.to.oracle.cloud.md) する [(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。
+データセンターを選択し、アイデンティティドメインとアカウント情報を入力してログインする。
+ログイン後、ダッシュボード画面の Java Cloud Service のドロップダウンメニューから **サービス・コンソールを開く** を選択する。
 
-![](images/00.png)
 
-Click on the hamburger icon located at the right top corner of the service summary. From the 
-menu select Open WebLogic Server Console
+![](jpimages/jcs-deploy01.png)
 
-![](images/01.png)
+サービス・サマリーの右上部の角にあるハンバーガー・メニューをクリックし、メニューから **WebLogic Serverコンソールを開く** を選択する。
 
-A new browser opens and you are redirected to the selected console’s log-in page. If the server is protected with a self-signed certificate, you will be warned that this certificate is not trusted. This is the default configuration and you can configure your certification. Select I Understand the Risk, and Add Exception (accept certificate). 
+![](jpimages/jcs-deploy02.png)
 
-![](images/02.png)
 
-When dialog appears select Confirm Security Exception.
+新しいブラウザが開かれ、選択したコンソールのログイン・ページにリダイレクトされる。自己証明書に保護されていると、証明書が信頼できないという警告される。これはデフォルトの構成であり、証明書を構成する事ができる。エラー内容を選択肢、例外の追加をクリックし、セキュリティ例外の承認を行う。
 
-![](images/03.png)
+![](jpimages/jcs-deploy03.png)
 
-When the console log-in page appears, enter the log-in credentials you entered for WebLogic Administrator when you created the service instance.
 
-![](images/04.png)
+ダイアログが表示されたら、**セキュリティ例外の承認** をクリックする。When dialog appears select Confirm Security Exception.
 
-After a successful login the WebLogic Server Administration Console is displayed. Click Lock & Edit and Service -> Data Sources. Create New **Generic Data Source**
+![](jpimages/jcs-deploy04.jpg)
 
-![](images/05.png)
+管理コンソールのログイン・ページが表示されたら、サービス・インスタンスの作成時に設定した WebLogic 管理者のユーザ名及びパスワードを入力する。
 
-Configure the data source with the following parameters:
+![](jpimages/jcs-deploy05.png)
 
-+ **Name**: jdbc-OE
-+ **Scope**: Global (default)
-+ **JNDI Name**: jdbc/OE
-+ **Database type**: Oracle (default)
 
-Click Next.
+ログインできたら、WebLogic Serer 管理コンソールが表示される。**ロックして編集** をクリックし、**サービス -> データ・ソース** とクリックする。そして、**汎用データ・ソース** を新規作成する。
 
-![](images/06.png)
+![](jpimages/jcs-deploy06.jpg)
 
-Leave the default Database Driver and click Next.
 
-![](images/07.png) 
+次のパラメータでデータ・ソースを構成する:
 
-Leave the default Transactions Options and click Next.
+- **名前**: jdbc-OE
+- **スコープ**: Global (default)
+- **JNDI名**: jdbc/OE
+- **データベースのタイプ**: Oracle (default)
 
-![](images/08.png)
+**次** をクリックする。
 
-Configure the database service connection descriptor.
+![](jpimages/jcs-deploy07.jpg)
 
-+ **Database Name**: `PDB1.<identitydomain>.oraclecloud.internal`
-+ **Host Name**: the Database Cloud Service [prepared](../dbcs-prepare/README.md) to run sample.  application. If you followed the instructions its name likely is `techcoDB`
-+ **Port**: leave the default 1521
-+ **Database User Name**: oe
-+ **Password**: password you entered for DBA (Database Cloud Service adminsitrator - sys) account
-+ **oracle.jdbc.DRCPConnectionClass**: leave empty
 
-Click Next.
+デフォルトのデータベース・ドライバのまま **次** をクリックする。
 
-![](images/09.png)
+![](jpimages/jcs-deploy08.jpg)
 
-Test the data source by click **Test Configuration**
 
-![](images/10.png)
+デフォルトのトランザクション・オプションのまま **次** をクリックする。
 
-Select the servers or clusters to which you want to deploy the application. For this tutorial, choose to deploy the application to all the servers in the cluster, and then click Finish.
+![](jpimages/jcs-deploy09.jpg)
 
-![](images/11.png)
 
-Activate Changes and check the acknowledgement: `All changes have been activated. No restarts are necessary`
+接続プロパティを設定する。
 
-![](images/12.png)
+- **データベース名**: `PDB1.<identitydomain>.oraclecloud.internal`
++ **ホスト名**: 準備済みのサンプル・アプリケーションを稼働させる Database Cloud Service インスタンス名。チュートリアル: [TechCo (Java EE) サンプル・アプリケーション用 Database Cloud Service の準備](../dbcs-prepare/README.md) にて準備したサービス・インスタンス: `techcoDB`
+- **ポート**: デフォルトのまま 1521
+- **データベース・ユーザー名**: oe
+- **パスワード**: DBA アカウントに入力したパスワード (Database Cloud Service 管理者 - sys)
+- **oracle.jdbc.DRCPConnectionClass**: 空欄
 
-#### Deploy sample application ####
-Click Lock & Edit and select Deployments in the Domain Structure tree panel. On the Deployments page, click Install.
+**次** をクリックする。
 
-![](images/13.png)
+![](jpimages/jcs-deploy10.jpg)
 
-On the Install page, click upload your file(s) to upload file.
 
-![](images/14.png)
+**構成のテスト** をクリックし、データ・ソースのテストを行う。
 
-In the Install Application Assistant, click Browse to find `GIT_REPO_LOCAL_CLONE/techco-app/target/TechCo-ECommerce-1.0-SNAPSHOT.war` (In case of virtualbox image environment it is: `/u01/content/cloud-native-devops-workshop/techco-app/target/TechCo-ECommerce-1.0-SNAPSHOT.war`) to deploy and upload it.
+![](jpimages/jcs-deploy11.jpg)
 
-![](images/15.png)
 
-After the file is uploaded, its name appears next to the Browse button. Click Next.
+アプリケーションをデプロイする対象をサーバか、クラスタかを選択する。このチュートリアルでは、アプリケーションを **クラスタのすべてのサーバ** にデプロイするように選択し、**終了** をクリックする。
 
-![](images/16.png)
+![](jpimages/jcs-deploy12.jpg)
 
-Select the file, and then click Next.
 
-![](images/17.png)
+**変更のアクティブ化** をクリックし、承認メッセージを確認する。: `すべての変更がアクティブ化されました。再起動は不要です。`
 
-Make sure the installation type is Install this deployment as an application. Click Next.
+![](jpimages/jcs-deploy13.png)
 
-![](images/18.png)
 
-Choose to deploy the application to all the servers in the cluster, and then click Next.
+#### サンプル・アプリケーションのデプロイ
+**ロックして編集** をクリックし、**デプロイメント** を選択する。そして **インストール** をクリックする。
 
-![](images/19.png)
+![](jpimages/jcs-deploy14.jpg)
 
-The default settings for Optional Settings are typically adequate so leave defaults. Click Next
 
-![](images/20.png)
+インストール・ページで、**ファイルをアップロード** をクリックする。
 
-In the Change Center, click Activate Changes.
+![](jpimages/jcs-deploy15.jpg)
 
-![](images/21.png)
 
-Now the application is in Prepared state and you need to make it ready to accept requests. To start a deployed application select Deployments in Domain Structure and click on Control Tab. The previously deployed application can be found in the list.
+アプリケーション・インストール・アシスタント画面上で、参照をクリックし、`<クローンしたGitリポジトリ>/techco-app/target/TechCo-ECommerce-1.0-SNAPSHOT.war` を見つけ、デプロイするためにアップロードする。
 
-![](images/22.png)
+![](jpimages/jcs-deploy16.jpg)
 
-Select the application, click Start and then select Servicing all requests.
 
-![](images/23.png)
+ファイルをアップロードすると、参照ボタンの隣にファイル名が表示される。**次** をクリックする。
 
-Click Yes to confirm the deployment.
+![](jpimages/jcs-deploy17.jpg)
 
-![](images/24.png)
 
-The application is now in the Active state and is ready to accept requests.
+ファイルを選択し、**次** をクリックする。
 
-![](images/25.png)
+![](jpimages/jcs-deploy18.jpg)
 
-#### Launch sample application ####
 
-To test an application that you have deployed and started on an Oracle Java Cloud Service instance that does not include a load balancer requires public IP address of the compute node.
+インストールタイプは **このデプロイメントをアプリケーションとしてインストールする** を選択し、**次** をクリックする。
 
-Change to the browser where the Oracle Cloud My Services dashboard is already opened. If it was closed or the session time expired then [sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign-in](https://cloud.oracle.com/sign-in). On the dashboard open the Java Cloud Service Console.
+![](jpimages/jcs-deploy19.jpg)
 
-![](images/00.png)
 
-Click the name of the service instance to which the application is deployed.
+デプロイ・ターゲットに **クラスタのすべてのサーバ** を選択し、**次** をクリックする。
 
-![](images/26.png)
+![](jpimages/jcs-deploy20.jpg)
 
-On the service instance details pages, find the list of nodes, and take note of the public IP address for the virtual machine that contains the Administration Server and Managed Server. In case if your Java Cloud Service have Load Balancer configured then use its public IP address.
 
-![](images/27.png)
+オプション設定はデフォルトのまま、**終了** をクリックする。
 
-Open a browser and write the following URL: `https://<public-ip-address>/TechCo-ECommerce`
-You should now see the home page of the sample application.
+![](jpimages/jcs-deploy21.jpg)
 
-![](images/28.png)
+**変更のアクティブ化** をクリックする。
+
+![](jpimages/jcs-deploy22.jpg)
+
+
+アプリケーションは ***準備完了*** 状態になっており、リクエストを受け付けられるようにする必要がある。デプロイしたアプリケーションを開始するには、ドメイン構造ペインの **デプロイメント** を選択し、**制御タブ** をクリックする。一覧からデプロイしたアプリケーションを見つける。
+
+![](jpimages/jcs-deploy23.jpg)
+
+
+アプリケーションを選択し、**起動** をクリックして **すべてのリクエストを処理** を選択する。
+
+![](jpimages/jcs-deploy24.jpg)
+
+
+デプロイメントの確認に対して **はい** をクリックする。
+
+![](jpimages/jcs-deploy25.jpg)
+
+
+アプリケーションは ***アクティブ*** 状態になったのでリクエストの受付ができるようになっている。
+
+![](jpimages/jcs-deploy26.jpg)
+
+
+#### サンプル・アプリケーションの起動
+
+Java Cloud Service インスタンスにデプロイし起動したアプリケーションのテストを行うために、コンピュート・ノードのパブリックIPアドレスが必要となる。
+
+Oracle Cloud マイ・サービスのダッシュボード画面に移動する。もし閉じている場合は、Oracle Cloud へ[サインイン](../common/sign.in.to.oracle.cloud.md)[(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)し、ダッシュボード画面の Java Cloud Service のドロップダウンメニューから **サービス・コンソールを開く** を選択する。
+
+![](jpimages/jcs-deploy01.png)
+
+
+アプリケーションをデプロイしたサービス・インスタンス名をクリックする。
+
+![](jpimages/jcs-deploy27.jpg)
+
+
+サービス・インスタンスの詳細ページで、ノード一覧を確認し管理サーバと管理対象サーバが含まれている仮想マシンのパブリックIPアドレスを控える。
+ロードバランサの構成を行っている場合は、その仮想マシンのパブリックIPアドレスを控える。
+
+![](jpimages/jcs-deploy28.jpg)
+
+
+ブラウザで次のURLを開く: `https://<public-ip-address>/TechCo-ECommerce`
+
+サンプル・アプリケーションのホーム・ページが確認できる。
+
+![](jpimages/jcs-deploy29.jpg)

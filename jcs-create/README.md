@@ -1,78 +1,107 @@
 ![](../common/images/customer.logo.png)
 ---
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 
-## Create Java Cloud Service instance using user interface ##
+## UI を用いた Java Cloud Service インスタンスの作成
 
-### Introduction ###
+### 説明
 
-By using Oracle Java Cloud Service, you can quickly create and configure an Oracle WebLogic Server domain and set up your Java EE application environment without worrying about setting up any infrastructure or platform details yourself. All Oracle Java Cloud Service instances that you create are also preconfigured to use your database deployment in Oracle Database Cloud Service, and an object storage container that you create in your Oracle Storage Cloud Service.
+Java Cloud Service を用いることにより、WebLogic Server ドメイン環境と Java EE アプリケーション環境を基盤環境やプラットフォームの状態を意識することなく、迅速に構築・構成を行う事ができる。全てのJava Cloud Service のインスタンスは、事前構成されている Database Cloud Service 上のOracle Database を使用する事ができる。また、Storage Cloud Service 上に作成されているオブジェクト・ストレージ・コンテナも使用できる。
 
-### About this tutorial ###
-This tutorial demonstrates how to:
-	
-+ create Java Cloud Service using the user interface.
+### このチュートリアルについて
+このチュートリアルは、以下を実施する:
 
-### Prerequisites ###
+- UI を用いて Java Cloud Service インスタンスを作成する
 
-+ Oracle Public Cloud Service account including Java, Database and Storage Cloud Service
-+ Oracle Java Cloud Service uses Oracle Database Cloud Service to host the Oracle Fusion Middleware component schemas required by Oracle Java Required Files (JRF). Prior to creating an Oracle Java Cloud Service instance, [use your Oracle Database Cloud Service subscription to create a database deployment](../dbcs-create/README.md). As part of the instance creation process, Oracle Java Cloud Service provisions this database deployment with the Oracle JRF schemas.
+### 前提
 
-### Steps ###
+- Java Cloud Service、Database Cloud Service 及び Storage Cloud Service が利用できるアカウントを保有している事
+- Java Required Files (JFR) に必要となる Fusion Middleware コンポーネント・スキーマをホストするために Database Cloud Service を使用する。そのため、Java Cloud Service のインスタンスを作成する事前に、チュートリアル: [UI を用いた Database Cloud Service インスタンスの作成](../dbcs-create/README.md) を実施しておく。Java Cloud Service のインスタンスの作成プロセスの中で、作成済みのデータベースに JRF スキーマをプロビジョンする。
 
-[Sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign-in](https://cloud.oracle.com/sign-in). On the dashboard click the hamburger icon on the Java tile. Select **Open Service Console**.
+### 手順
 
-![](images/01.png)
+Oracle Cloud へ[サインイン](../common/sign.in.to.oracle.cloud.md) する [(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。
+データセンターを選択し、アイデンティティドメインとアカウント情報を入力してログインする。
+ログイン後、ダッシュボード画面の Java Cloud Service のドロップダウンメニューから **サービス・コンソールを開く** を選択する。
 
-This is the Java Cloud Service Console page. If this is the first time opening Java console then Welcome page will appear. In this case click **Go to Console** button.
+![](jpimages/jcs-create01.png)
 
-![](images/02.png)
 
-To create new instance click **Create Service** button.
+Java Cloud Service コンソール画面が表示される。初めてコンソール画面を開く場合、ウェルカム・ページが表示される。この場合は、**コンソールに移動** をクリックする。
 
-![](images/03.png)
+![](jpimages/jcs-create02.jpg)
 
-Select subscription type. Select the fully managed Oracle Java Cloud Service and the desired billing format. For more details about subscription types see the [documentation](https://docs.oracle.com/cloud/latest/jcs_gs/JSCUG/GUID-31F00F2C-221F-4069-8E8A-EE48BFEC53A2.htm#JSCUG-GUID-98DD6CE1-480F-4AA9-8131-A1D3D274440F).
-![](images/create.jcs.03.png)
 
-Select the latest 12c Software Release.
+インスタンスの作成のために **サービスの作成** をクリックする。
 
-![](images/05.png)
+![](jpimages/jcs-create03.jpg)
 
-Select the Enterprise Edition software edition.
 
-![](images/06.png)
 
-The last input page is the Service Details page. The following parameters have to be provided:
-	
-+ **Service Name**: the name of the service instance e.g. techco
-+ **Shape**: number of OCPU and size of the RAM. Choose the smallest (default) one.
-+ **Description**: any description for your service.
-+ **Cluster size**: to save resources leave the default 1. Which means one managed server.
-+ **Domain Partitions**: Create mutitenant instance. Select 1 to enable partitioning.
-+ **SSH Public Key**: public key which will be uploaded to the VM during the creation. It allows to connect to the VM through ssh connection using the private key. Use the same publicKey what was generated for Database Cloud Service instance. Click on Edit button and select [previously saved (during Database Cloud Service creation)](../dbcs-create/README.md) `GIT_REPO_LOCAL_CLONE/cloud-utils/publicKey`. You can also copy the content of *publicKey* into Key Value field. If you don't have or want to  to create different keypair select **Create a New Key** option and download the newly generated keypair for later usage.
-![](images/07.png)
-+ **Enable Administration Console**: because this instance will be available on public internet the default is that the WebLogic Admin console is not enabled. Do not forget to check in to get access to the Admin console.
-+ **Username**: username of WebLogic administrator. For demo purposes you can use: weblogic
-+ **Password**: WebLogic administrator's password. Don't forget to note the provided password.
-+ **Deploy Sample Application**: deploy the sample application. It can be useful to test accessibility (correct LB configuration, etc.) of the Java Cloud Service Instance.
-+ **Database Configuration / Name**: Database Cloud Service name to store WebLogic repository data. Basically the list populated with database services within the same identity domain.
-+ **Database Configuration / PDB Name**: pluggable database service identifier of the Database Cloud Service instance -provided above- which will be used to store repository schema. If you have choosen default (PDB1) during Database Cloud Service creation then leave the default here too.
-+ **Database Configuration / Administrator User Name**: DBA admin to create repository schema for Java Cloud Service instance. Enter: sys.
-+ **Database Configuration / Password**: DBA admin password you provided during Database Cloud Service creation.
-+ **Database Configuration / For Application Schema**: It is an option to add different database service instance accessibility. For example different database used by the application and different for Java Cloud Service instance repository. You can configure later another Database Cloud Service, but here it is easier to define.
-+ **Provision Load Balancer**: the save resources for sample application we will not create Load Balancer instance. Leave default: No
-+ **Cloud Storage Container**: the name of the container for Database Cloud Service instance. The format is the following: Storage-IDENTITYDOMAIN/CONTAINERNAME. The container don't need to be created in advance, because -see below- there is an option to create automatically. Now give the same container what you provided (created) earlier for Database Cloud Service instance.
-+ **Cloud Storage User Name and Password**: the credentials for storage. Usually it is the same what was used to sign in to Oracle Cloud Services.
-+ **Create Cloud Storage Containers**: if the container defined above does not exist then check in.
+サブスクリプション・タイプを選択する。
+- サービス・レベル: **Oracle Java Cloud Service**
+- 請求頻度: **月** (デフォルト)
 
-![](images/08.png)
+詳細なサブスクリプション・タイプは[documentation](https://docs.oracle.com/cloud/latest/jcs_gs/JSCUG/GUID-31F00F2C-221F-4069-8E8A-EE48BFEC53A2.htm#JSCUG-GUID-98DD6CE1-480F-4AA9-8131-A1D3D274440F)を参照。
 
-For more details about parameters see the [documentation](https://docs.oracle.com/cloud/latest/jcs_gs/JSCUG/GUID-31F00F2C-221F-4069-8E8A-EE48BFEC53A2.htm#JSCUG-GUID-88BD737C-8DA9-419A-8DBF-489BDFF9C512). Click **Next**.
+![](jpimages/jcs-create04.png)
 
-The final page is the summary page about the configuration before submit the instance creation request. Click **Create** to start the provisioning of the new service instance.
-![](images/09.png)
 
-When the request has been accepted the Java Cloud Service Console page appears and shows the new instance. The instance now is in Maintenance (Progress) mode. Click **In Progress** link to get more information about the status.
-![](images/10.png)
+ソフトウェア・リリースを選択する。
+- **Oracle WebLogic Server 12c (12.2.1.0)**
 
+
+![](jpimages/jcs-create05.jpg)
+
+ソフトウェア・エディションを選択する。
+Java Cloud Service では、インスタンス作成時に以下のエディションが選択可能
+- Standard Edition
+- Enterprise Edition
+- Enterprise Edition with Coherence
+
+この中から **Enterprise Edition** を選択する。
+
+![](jpimages/jcs-create06.jpg)
+
+最後にサービス詳細では、以下のパラメータを入力する
+
+- **サービス名**: サービス・インスタンスの名前 (例. techco)
+- **説明**: サービスに関する説明
+- **クラスタ・サイズ**: デフォルト(1)を選択する。これは管理対象サーバが1インスタンスである事を意味する。
+- **ドメイン・パーティション**: マルチテナント・インスタンスの作成を行う。デフォルト(1)を選択する。
+- **コンピュート・シェイプ**: OCPU の数とメモリの容量 (デフォルトを選択)
+- **タイムゾーン**: タイムゾーンを選択 (日本標準時を選択)
+- **SSH 公開鍵**: 仮想マシンにアップロードする公開鍵を指定する。秘密鍵を利用して SSH接続 によりアクセスできる。Database Cloud Service インスタンスを作成した際に作成した公開鍵を使用する。**編集** ボタンをクリックしして、チュートリアル: [UI を用いた Database Cloud Service インスタンスの作成](../dbcs-create/README.md) で作成・保存した`<クローンしたGitリポジトリ>/cloud-utils/publicKey`を選択する。 または、*publickKey* の内容をキー値フィールドにコピーしてもよい。もし鍵を持っていない場合や、別の鍵を作成したい場合は **新規鍵の作成** を選択し、新しく鍵を生成し保存しておく。
+
+![](jpimages/jcs-create07.jpg)
+
+
+- **管理コンソールへのアクセスの有効化**: 管理コンソールににアクセスするためにチェックをつけておく。このチェックをつけない場合、パブリックなインターネット上に公開されることから、デフォルトでは管理コンソールのアクセスポートは有効になっていない。
+
+- **ユーザ名**: WebLogic 管理者のユーザ名を指定する。ここでは、***weblogic*** を入力
+- **パスワード**: WebLogic 管理者のパスワードを指定する。
+- **サンプル・アプリケーションのデプロイ**: サンプル・アプリケーションのデプロイを行う。Java Cloud Service インスタンスのアクセスの確認、ロードバランサの構成などに用いる。
+- **データベース構成 / 名前**: WebLogic のリポジトリ・データを格納するための Database Cloud Service インスタンス名を指定する。同じアイデンティティ・ドメイン内の Database Cloud Service のインスタンス名が表示される。
+- **データベース構成 / PDB 名**: リポジトリ・スキーマを格納するために使用するプラガブル・データベースの名称を指定する。これは先に指定した Database Cloud Service のインスタンスに含まれる PDB を指定する。デフォルトでは、Database Cloud Service インスタンス作成時にデフォルトで作成される　***PDB1*** が指定される。
+- **データベース構成 / 管理者のユーザ名**: Java Cloud Service のリポジトリ・スキーマを作成するための DBA admin ユーザを指定する。(***sys*** を指定)
+- **データベース構成 / パスワード**: DBA admin ユーザのパスワードを指定する。
+- **データベース構成 / アプリケーション・スキーマの場合**: 異なるデータベース・インスタンスへのアクセスを追加するオプションである。たとえば、アプリケーションで使用するデータベースが、Java Cloud Service インスタンスで使用するリポジトリ・データベースと異なる場合に使用する。Java Cloud Service インスタンスの作成後でも別のデータベース・インスタンスの指定はできるが、こここで定義をする方が容易に定義できる。
+- **ロード・バランサのプロビジョニング**: ロードバランサの構成有無を指定する。(***いいえ*** を選択する)
+- **クラウド・ストレージ・コンテナ**: Java Cloud Service 用のストレージ・コンテナ名。次のフォーマットで入力する: `Storage-IDENTITYDOMAIN/CONTAINERNAME`
+なお以降の指定項目で自動でコンテナを作成するオプションがあるため、コンテナは、事前に作成しておく必要はない。
+ここでは、Database Service インスタンスの作成時に作成済みのコンテナ名を指定する。 (***techco_container***)
+- **クラウド・ストレージ・ユーザー名/パスワード**: Storage Cloud Service のアクセス・ユーザ及びパスワード
+- **クラウド・ストレージ・コンテナの作成**: チェックする (コンテナが存在しない場合に作成する)
+
+![](jpimages/jcs-create08.png)
+
+
+各パラメータの詳細は[documentation](https://docs.oracle.com/cloud/latest/jcs_gs/JSCUG/GUID-31F00F2C-221F-4069-8E8A-EE48BFEC53A2.htm#JSCUG-GUID-88BD737C-8DA9-419A-8DBF-489BDFF9C512)を参照。**次** をクリックする。
+
+最後のページは構成に関するサマリーが表示される。ここでインスタンスの作成リクエストのサブミット前に確認を行う。**作成** をクリックするとサービス・インスタンスの作成が開始する。
+
+![](jpimages/jcs-create09.jpg)
+
+リクエストが受領されると、Java Cloud Service Cloud コンソール画面に戻り、新しいインスタンスが表示される。この時点では、インスタンスはメンテナンス状態となっている。**進行中** をクリックするとインスタンス作成状態の情報が確認できる。
+
+![](jpimages/jcs-create10.jpg)
