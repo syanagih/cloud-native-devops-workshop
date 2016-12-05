@@ -36,15 +36,15 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 
 #### Java Mission Control と Java Flight Recorder の診断機能を用いた Application Container Cloud Service で稼働するアプリケーションのモニタリング
 
-+ [Application Conytainer Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
+- [Application Conytainer Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
 
 #### Integrate telemetry into continuous delivery and monitor an application using the Oracle Management Cloud
-+ [Deploying APM Agent on Apache Tomcat based application and setting up Application Performance Monitoring](apm/README.md)
+- [Deploying APM Agent on Apache Tomcat based application and setting up Application Performance Monitoring](apm/README.md)
 
 #### Application Conainer Cloud Service での軽量 Java コンテナ(Tomcat) の実行
 
-+ [Tomcat ベースのアプリケーションを Application Container Cloud Service へデプロイ](accs-tomcat/README.md)
-+ [UI 及び PSM CLI を用いた Application Cloud Service のスケールアップ/スケールダウン](accs-psm/README.md)
+- [Tomcat ベースのアプリケーションを Application Container Cloud Service へデプロイ](accs-tomcat/README.md)
+- [UI 及び PSM CLI を用いた Application Cloud Service のスケールアップ/スケールダウン](accs-psm/README.md)
 
 #### Java Cloud Service への　Java EE アプリケーションのデプロイ
 
