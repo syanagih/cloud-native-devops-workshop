@@ -55,9 +55,9 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 
 ####Manage Oracle Java Cloud Service using UI and PaaS Service Manager####
 
-+ [Direct access and management of Oracle Java Cloud Service](jcs-direct/README.md)
-+ [Scale-Out Oracle Java Cloud Service using user interface](jcs-scale-ui/README.md)
-+ [Scale-In Oracle Java Cloud Service using PaaS Service Manager (PSM) Command Line Interface (CLI)](jcs-scale-psm/README.md)
+- [Java Cloud Service のダイレクト・アクセス及び管理](jcs-direct/README.md)
+- [UI を用いた Java Cloud Service クラスタのスケール・アウト](jcs-scale-ui/README.md)
+- [PSM コマンド・ライン・インターフェースを用いた Java Cloud Service のスケール・イン](jcs-scale-psm/README.md)
 
 ####Making Java Cloud Service elastically scalable through Policy based Auto-scaling####
 
