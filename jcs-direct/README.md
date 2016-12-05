@@ -2,7 +2,7 @@
 ---
 # ORACLE Cloud-Native DevOps workshop
 ----
-## Direct access and management of Oracle Java Cloud Service
+## Java Cloud Service のダイレクト・アクセス及び管理
 
 ### 説明
 
