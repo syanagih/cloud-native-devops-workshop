@@ -1,207 +1,267 @@
 ![](../common/images/customer.logo.png)
 ---
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 -----
-## Oracle Java Cloud Service Policy Based Auto Scaling ##
+## Java Cloud Service 自動スケール・ポリシー
 
-### Introduction ###
-Scaling lets you add or remove resources for an Oracle Java Cloud Service instance on demand in response to changes in load on the service instance. You can scale an Oracle Java Cloud Service instance by scaling a cluster, a node, or the Coherence data tier in the service instance.
-Oracle Java Cloud Service has Auto Scaling feature which allows you to define rule for a given service. When the rule's criteria meets the defined threshold Auto Scaling starts to scale in/out the service.
+### 説明
 
-### About this tutorial ###
-This tutorial demonstrates how to:
+Java Cloud Service では、スケーリング機能によりサービス・インスタンスの負荷による変化に応じてオンデマンドで Java Cloud Service のリソースを追加したり削減したりすることができる。サービス・インスタンス上のクラスタ、ノードまた Coherence データ層をスケールする事により、Java Cloud Service インスタンスをスケールする事ができる。
+Java Cloud Service では、予めサービスにルールを定義しておく自動スケール機能がある。ルールの基準が定義しておいた閾値を満たした際に、自動スケールがサービスをスケール・イン / スケール・アウトを始める。
 
-+ Create Auto Scaling rule
+### このチュートリアルについて
 
-### Prerequisites ###
+このチュートリアルは、以下を実施する:
 
-+ Oracle Public Cloud Services account including:
-	+ Database Cloud Service
-	+ Java Cloud Service
-+ [Create Database Cloud Service Instance using user interface](../dbcs-create/README.md)
-+ [Create Java Cloud Service Instance using user interface](../jcs-create/README.md)
+- 自動スケールのルールを作成
 
-### Steps ###
+### 前提
 
-#### Build and Deploy Sample Load Generator Application ####
+- 以下の Oracle Cloud Service アカウントを保有している事:
+  - Database Cloud Service
+	- Java Cloud Service
+- 以下のチュートリアルを実施済みである事
+  - [UI を用いた Database Cloud Service インスタンスの作成](../dbcs-create/README.md)
+  - [UI を用いた Java Cloud Service インスタンスの作成](../jcs-create/README.md)
 
-First you need to build the application which will generate load on the service instance's CPU. This is a simple Web Application which creates a large collection and repeatedly shuffle/order the elements in the list. Open a terminal and go to the folder `GIT_REPO_LOCAL_CLONE/jcs.autoscale` and run `mvn install`.
+### 手順
 
-	[oracle@localhost u01]$ cd /u01/content/cloud-native-devops-workshop/jcs.autoscale/
-	[oracle@localhost jcs.autoscale]$ mvn install
-	[INFO] Scanning for projects...
-	[INFO]                                                                         
-	[INFO] ------------------------------------------------------------------------
-	[INFO] Building Sample Load Generator Webapp 0.0.1
-	[INFO] ------------------------------------------------------------------------
-	Downloading: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.2/maven-war-plugin-2.2.pom
-	...
-	...
-	...
-	Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-filtering/1.0-beta-2/maven-filtering-1.0-beta-2.jar (33 KB at 74.5 KB/sec)
-	[INFO] Packaging webapp
-	[INFO] Assembling webapp [load] in [/u01/content/cloud-native-devops-workshop/jcs.autoscale/target/load]
-	[INFO] Processing war project
-	[INFO] Copying webapp resources [/u01/content/cloud-native-devops-workshop/jcs.autoscale/src/main/webapp]
-	[INFO] Webapp assembled in [68 msecs]
-	[INFO] Building war: /u01/content/cloud-native-devops-workshop/jcs.autoscale/target/load.war
-	[INFO] WEB-INF/web.xml already added, skipping
-	[INFO] 
-	[INFO] --- maven-install-plugin:2.4:install (default-install) @ load ---
-	[INFO] Installing /u01/content/cloud-native-devops-workshop/jcs.autoscale/target/load.war to /home/oracle/.m2/repository/com/oracle/sample/load/0.0.1/load-0.0.1.war
-	[INFO] Installing /u01/content/cloud-native-devops-workshop/jcs.autoscale/pom.xml to /home/oracle/.m2/repository/com/oracle/sample/load/0.0.1/load-0.0.1.pom
-	[INFO] ------------------------------------------------------------------------
-	[INFO] BUILD SUCCESS
-	[INFO] ------------------------------------------------------------------------
-	[INFO] Total time: 6.958 s
-	[INFO] Finished at: 2016-10-21T08:10:02-07:00
-	[INFO] Final Memory: 14M/491M
-	[INFO] ------------------------------------------------------------------------
-	[oracle@localhost jcs.autoscale]$ 
+#### 負荷生成サンプル・アプリケーションのビルドとデプロイ
 
-Now [sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign_in](https://cloud.oracle.com) and on the Dashboard Page click the **Java Instances** link. 
-![](images/01.dashboard.png)
+まず、サービス・インスタンスの CPU に負荷を与えるアプリケーションをビルドする。これはシンプルな Web アプリケーションで巨大なコレクション・オブジェクトを作成し、そのオブジェクト内の要素を繰り返しシャッフルし、整列する操作を行うものである。ターミナルを開き、`<クローンしたGitリポジトリ>/jcs.autoscale` フォルダに移動し、`mvn install` を実行する。
 
-On the Console page select and click the Java Cloud Service name link where you want to deploy the Load Application.
-![](images/02.jcs.select.png)
-
-Click the hamburger menu on the top middle, next to the instance name. Select **Open WebLogic Server Console**.
-![](images/03.open.wls.console.png)
-
-A new browser (tab) opens and you are redirected to the selected console’s log-in page. If the server is protected with a self-signed certificate, you will be warned that this certificate is not trusted. This is the default configuration and you can configure your certification. Select **I Understand the Risk**, and **Add Exception** (accept certificate).
-![](images/04.security.exception.png)
-
-When dialog appears select **Confirm Security Exception**.
-![](images/04.confirm.exception.png)
-
-When the console log-in page appears, enter the log-in credentials you entered for WebLogic Administrator when you created the service instance. Click **Login**.
-![](images/04.wls.console.login.png)
-
-After a successful login the WebLogic Server Administration Console is displayed. On the left side in the navigation tree click **Deployments**. Then click **Lock & Edit** above and finally click the **Install** button.
-![](images/05.install.app.png)
-
-Now you need to click **Upload your file(s)** link because the WAR file not located on the server, hence it requires upload.
-![](images/06.upload.select.png)
-
-Click **Choose File** to open File Open dialog.
-![](images/07.choose.file.png)
-
-Select the previously built `load.war` (web archive) in folder: `GIT_REPO_LOCAL_CLONE/jcs.autoscale/target`.
-![](images/08.select.file.png)
-
-After the file is uploaded, its name appears next to the **Browse** button. Click **Next**.
-![](images/09.file.choosen.png)
-
-Confirm the selection of the `load.war` application archive and click **Next**. 
-![](images/10.select.load.war.png)
-
-Make sure the installation type is Install this deployment as an application. Click **Next**.
-![](images/11.global.scope.png)
-
-Choose to deploy the application to all the servers in the cluster, and then click **Next**.
-![](images/12.target.png)
-
-The default settings for Optional Settings are typically adequate so leave defaults. Click **Finish**.
-![](images/13.finish.png)
-
-In the Change Center, click **Activate Changes**.
-![](images/14.activate.changes.png)
-
-Now the application is in *Prepared* state and you need to make it ready to accept requests. To start a deployed application select *Deployments* in Domain Structure and click on **Control** Tab. The previously deployed application can be found in the list. Select the application, click **Start** and then select **Servicing all requests**.
-![](images/16.start.png)
-
-Click **Yes** to confirm the deployment.
-![](images/17.start.confirm.png)
-
-The application is now in the *Active* state and is ready to accept requests.
-![](images/18.active.png)
-
-#### Launch the Sample Load Generator Application ####
-
-To hit the application first you need to get more information about your Java Cloud Service  topology. You need to have a public IP address which belongs to your Load Balancer if that exists. Otherwise you need the IP address of the VM instance which runs one of your Managed Server. 
-
-Go back to the browser (tab) where you opened WebLogic console. That page is the Java Cloud Service details page where you can check the instance topology and the public IP addresses. Make sure that the **Overview** is selected on the left menu. If you have Load Balancer then use its IP address to hit the sample application. If you don't have Load Balancer then use IP address of VM which runs the Managed Server. Even if you have Load Balancer please note the IP address of the VM hosts WebLogic for further usage. You will access using `ssh` to the VM to check CPU load.
-![](images/19.ip.details.png)
-
-Open a browser and write the following URL: `https://<public-ip-address>/load/cpu.jsp` You should now see a simple application what will be used later for load generation.
-![](images/20.cpu.jsp.png)
-
-#### Create Auto Scaling Rule ####
-
-Create rule for Java Cloud Service which triggers auto scaling based on the defined criteria. Go back to the Java Cloud Service instance details page and click **Topology** on the left menu. Click **Add Node** and select **Auto Scaling** item.
-![](images/25.topology.add.node.png)
-
-On the Rules page click **Create Rule**. 
-![](images/26.create.rule.png)
-
-Define the rule parameters.
-	
-+ Perform: **Scale Out**
-+ Maximum Cluster Size: **2** (1 more higher then the existing cluster size)
-+ CPU Utilization: **Average** - **50%**
-+ Number for measurement period: **1**
-+ Period length: **5** minutes (this is the minimum)
-+ VM instances: **Any**
-+ Cool down period: 30 (this is the minimum)
-
-Click **Create**.
-
-![](images/27.rule.details.png)
-
-Wait till the rule will be complete.
-![](images/27.rule.ready.png)
-
-Before the load generation create `ssh` access to the VM hosts Managed Server to check CPU load during the utilization. Open a terminal and run `ssh -i privateKey opc@VM_PUBLIC_IP` command. The `privateKey` is your private key pair of the public key you defined during Java Cloud Service creation. If your private key has passphrase you need to provide when `ssh` requires
-
-	[oracle@localhost jcs.autoscale]$ ssh -i ../pk.openssh opc@140.XX.XX.45
-	The authenticity of host '140.86.12.45 (140.86.12.45)' can't be established.
-	RSA key fingerprint is b7:3b:1a:a0:9b:f0:e4:44:78:ac:c2:a8:81:4f:03:a3.
-	Are you sure you want to continue connecting (yes/no)? yes
-	Warning: Permanently added '140.86.12.45' (RSA) to the list of known hosts.
-	Enter passphrase for key '../pk.openssh': 
-	[opc@winsdemowls-wls-1 ~]$ 
-
-Now you have established `ssh` connection to the VM. Run `top` to check the CPU utilization  of the VM hosting Managed Server during the load generation.
-
-	[opc@winsdemowls-wls-1 ~]$ top
-
-The top program provides a dynamic real-time view of a running system. It can display system summary information as well as a list of tasks currently being managed by the Linux kernel. At the beginning of the second line you can see the real time CPU utilization.
-
-	top - 16:22:15 up  5:36,  1 user,  load average: 1.49, 3.42, 1.77
-	  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                                                            
-	24145 oracle    20   0 5141m 1.6g  60m S  0.7 22.3   1:47.42 java                                                                                                               
-	21526 oracle    20   0 5687m 1.5g  41m S  0.3 21.4 142:52.14 java                                                                                                               
-	    1 root      20   0 19408 1308 1232 S  0.0  0.0   0:00.63 init                                                                                                               
-	    2 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kthreadd                                                                                                           
-	    3 root      20   0     0    0    0 S  0.0  0.0   0:00.04 ksoftirqd/0                                                                                                        
-	    5 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/0:0H                                                                                                       
-	    6 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0                                                                                                        
-	    7 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0H                                                                                                       
-	    8 root      RT   0     0    0    0 S  0.0  0.0   0:00.04 migration/0                                                                                                        
-
-Leave this terminal open and on top to check later the CPU load.
-
-Here is the time to generate load for Java Cloud Service. Switch to the browser where the simple Load Generator Web Application was opened. Select `mid` load, enter 400000 milliseconds long run and click **Submit**.
-![](images/28.generate.load.png)
-
-Switch back to the terminal where `top` is running to check the CPU utilization and wait till the Auto Scaling rule triggers scale out operation for Java Cloud Service. 
-
-	top - 16:24:37 up  3:19,  1 user,  load average: 1.46, 0.35, 0.15
-	Tasks: 115 total,   1 running, 114 sleeping,   0 stopped,   0 zombie
-	Cpu(s): 99.8%us,  0.0%sy,  0.0%ni,  0.2%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
-	Mem:   7397060k total,  4541608k used,  2855452k free,    91212k buffers
-	Swap:  4194300k total,        0k used,  4194300k free,   802920k cached
-	
-	  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                                                            
-	21526 oracle    20   0 5686m 1.6g  41m S 200.3 22.2   4:00.00 java                                                                                                              
-	 4251 oracle    20   0 4953m 1.6g  58m S  0.3 23.2   3:33.46 java                                                                                                               
-	22930 opc       20   0 95896 1772  856 S  0.3  0.0   0:00.23 sshd                                                                                                               
-	    1 root      20   0 19408 1540 1232 S  0.0  0.0   0:00.63 init                                                                                                               
-	    2 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kthreadd                                                                                                           
-	    3 root      20   0     0    0    0 S  0.0  0.0   0:00.03 ksoftirqd/0                                                                                                        
-	    5 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/0:0H                                                                                                       
-	    6 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0                                                                                                        
-	    7 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0H                                                                                                       
-	    8 root      RT   0     0    0    0 S  0.0  0.0   0:00.04 migration/0                                                                                                        
+```bash
+$ mvn install
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Sample Load Generator Webapp 0.0.1
+[INFO] ------------------------------------------------------------------------
+Downloading: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.2/maven-war-plugin-2.2.pom
+Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.2/maven-war-plugin-2.2.pom (7 KB at 3.6 KB/sec)
+...
+...
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 12.318 s
+[INFO] Finished at: 2016-12-06T14:01:08+09:00
+[INFO] Final Memory: 15M/211M
+[INFO] ------------------------------------------------------------------------
+```
 
 
+Oracle Cloud へ[サインイン](../common/sign.in.to.oracle.cloud.md) する [(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。
+データセンターを選択し、アイデンティティドメインとアカウント情報を入力してログインする。
+ログイン後、ダッシュボード画面の Java Cloud Service のドロップダウンメニューから **サービス・コンソールを開く** を選択する。
+
+![](jpimages/jcs-autoscale01.jpg)
+
+
+サービス・コンソールで、負荷生成サンプル・アプリケーションをデプロイするサービス・インスタンス名をクリックする。
+
+![](jpimages/jcs-autoscale02.jpg)
+
+
+画面上部中央のハンバーガー・メニューをクリックし、**WebLogic Serverコンソールを開く** を選択する。
+
+![](jpimages/jcs-autoscale03.jpg)
+
+
+新しいブラウザが開かれ、選択したコンソールのログイン・ページにリダイレクトされる。自己証明書に保護されていると、証明書が信頼できないという警告される。これはデフォルトの構成であり、証明書を構成する事ができる。エラー内容を選択肢、例外の追加をクリックし、セキュリティ例外の承認を行う。
+
+![](jpimages/jcs-autoscale04.png)
+
+
+ダイアログが表示されたら、**セキュリティ例外の承認** をクリックする。When dialog appears select Confirm Security Exception.
+
+![](jpimages/jcs-autoscale05.jpg)
+
+管理コンソールのログイン・ページが表示されたら、サービス・インスタンスの作成時に設定した WebLogic 管理者のユーザ名及びパスワードを入力する。
+
+![](jpimages/jcs-autoscale06.png)
+
+
+ログインできたら、WebLogic Serer 管理コンソールが表示される。**ロックして編集** をクリックし、**デプロイメント** をクリックする。そして、**インストール** をクリックする。
+
+![](jpimages/jcs-autoscale07.jpg)
+
+
+サーバ上には WAR ファイルを配置していないためアップロードする必要があるので、**ファイルをアップロード** をクリックする必要がある。
+
+![](jpimages/jcs-autoscale08.jpg)
+
+
+デプロイメント・アーカイブの **参照...** をクリックし、ファイルのアップロード・ダイアログを開く。
+
+![](jpimages/jcs-autoscale09.jpg)
+
+
+次のフォルダに配置されている先にビルドした `load.war` を選択する: `<クローンしたGitリポジトリ>/jcs.autoscale/target`.
+
+![](jpimages/jcs-autoscale10.jpg)
+
+
+ファイルをアップロードすると **参照** の隣に WAR ファイルの名前が表示される。**次** をクリックする。
+
+![](jpimages/jcs-autoscale11.jpg)
+
+
+Confirm the selection of the `load.war` が選択されている事を確認し、**Next** をクリックする。
+
+![](jpimages/jcs-autoscale12.jpg)
+
+
+**このデプロイメントをアプリケーションとしてインストールする** が選択されている事を確認し、**次** をクリックする。
+
+![](jpimages/jcs-autoscale13.jpg)
+
+
+アプリケーションをデプロイする先のサーバは、**クラスタのすべてのサーバー** を選択し、**次** をクリックする。
+
+![](jpimages/jcs-autoscale14.jpg)
+
+
+デフォルトの設定のまま、**終了** をクリックする。
+
+![](jpimages/jcs-autoscale15.jpg)
+
+
+チェンジ・センターで、**変更のアクティブ化** をクリックする。
+
+![](jpimages/jcs-autoscale16.jpg)
+
+
+アプリケーションは ***準備完了*** 状態になっており、リクエストを受け付けられるようにする必要がある。デプロイしたアプリケーションを開始するには、ドメイン構造ペインの **デプロイメント** を選択し、**制御タブ** をクリックする。一覧からデプロイしたアプリケーションを見つける。アプリケーションを選択し、**起動** をクリックして **すべてのリクエストを処理** を選択する。
+
+![](jpimages/jcs-autoscale17.jpg)
+
+デプロイメントの確認に対して **はい** をクリックする。
+
+![](jpimages/jcs-autoscale18.jpg)
+
+
+アプリケーションは ***アクティブ*** 状態になったのでリクエストの受付ができるようになっている。
+
+![](jpimages/jcs-autoscale19.jpg)
+
+#### 負荷生成サンプル・アプリケーションの起動
+
+アプリケーションの起動ために、Java Cloud Service に関する情報を確認しておく必要がある。ロードバランサを構成しているのであれば、ロードバランサが稼働しているパブリック IP アドレスを確認する。そうではない場合、管理対象サーバが稼働するいずれかの仮想マシンのパブリック IP アドレスを確認する必要がある。
+
+ブラウザに戻り、Java Cloud Service の詳細ページでインスタンス・トポロジーとパブリック IP アドレスを確認する。左部メニューで **概要** が選択されている事を確認する。ロード・バランサが構成されていれば、そのパブリック IP アドレスをサンプル・アプリケーションの実行に使用する。ロード・バランサを構成していない場合は、管理対象サーバが稼働している仮想マシンの パブリック IP アドレスを使用する。ロード・バランサが構成されている場合でも、WebLogic をホストしている仮想マシンの IP アドレスは後続の手順のために控えておく必要がある。`ssh` を使用して仮想マシンにアクセスし、CPU の負荷をチェックするのである。
+
+![](jpimages/jcs-autoscale20.jpg)
+
+
+ブラウザを開き、次の URL を入力する: `https://<public-ip-address>/load/cpu.jsp` すると、負荷生成に使用するアプリケーションを確認できる。
+
+![](jpimages/jcs-autoscale21.jpg)
+
+
+#### 自動スケール・ルールの作成
+
+予め定義した基準をベースとした自動スケールを起動する Java Cloud Service のルールを作成する。Java Cloud Service インスタンスの詳細ページに戻り、左部メニューから **トポロジ** をクリックする。**ノードの追加** をクリックし、**自動スケール** を選択する。
+
+![](jpimages/jcs-autoscale22.jpg)
+
+Rules ページで、**Create Rule** をクリックする。
+
+![](jpimages/jcs-autoscale23.jpg)
+
+次のルール・パラメータを設定する:
+
+- Perform: **Scale Out**
+- Maximum Cluster Size: **2** (既存のクラスタサイズより 1 超のサイズ)
+- CPU Utilization: **Average** - **50%**
+- 計測期間数: **1**
+- 計測期間: **5** minutes (5 が最小値)
+- VM instances: **Any**
+- Cool down period: 30 (30 が最小値)
+  - スケール実施ご次回のスケールまでのスケール動作凍結期間
+
+**Create** をクリックする。
+
+![](jpimages/jcs-autoscale24.jpg)
+
+
+ルールの作成が完了するまで待機する。
+
+![](jpimages/jcs-autoscale25.jpg)
+
+
+負荷生成の前に、CPU 負荷を確認するために管理対象サーバをホストしている仮想マシンへの `ssh` アクセスを行っておく。ターミナルを開き、`ssh -i privateKey opc@VM_PUBLIC_IP` コマンドを実行する。`privateKey` は、Java Cloud Service を作成する際に構成した公開鍵の対になる秘密鍵ファイルである。秘密鍵がパスフレーズを持っている場合、`ssh` する際にパスフレーズを入力する必要がある。
+
+```bash
+$ ssh -i privateKey opc@141.144.33.150
+[opc@techco-wls-1 ~]$
+```
+
+これで仮想マシンへの `ssh` 接続が確立した。`top` コマンドを実行し、負荷生成中の管理対象サーバが稼働する仮想マシンの CPU 使用率を確認する
+
+```bash
+[opc@techco-wls-1 ~]$ top
+```
+
+`top` は稼働中のシステムをリアルタイムな情報表示画面を提供してくれる。システム状況のサマリ情報を表示ができ、またLinux カーネルによって現在管理されているプロセス一覧を表示する事ができる。
+3行目で CPU の状態をリアルタイムに確認する事ができる。
+
+- us: ユーザプロセスの使用時間
+- sy: システムプロセスの使用時間
+- ni: 実行優先度を変更したユーザプロセスの使用時間
+- id: アイドル状態の時間
+- wa: I/O の終了待ちをしている時間
+- hi: ハードウェアの割り込み要求での使用時間
+- si: ソフトウェアの割り込み要求での使用時間
+- st: OS 仮想化利用時に他の仮想 CPU の計算で待たされた時間
+
+```bash
+top - 08:51:15 up 6 days,  4:39,  1 user,  load average: 0.00, 0.01, 0.05
+Tasks: 120 total,   1 running, 119 sleeping,   0 stopped,   0 zombie
+Cpu(s):  0.2%us,  0.0%sy,  0.0%ni, 99.2%id,  0.7%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:   7660116k total,  5932292k used,  1727824k free,   374504k buffers
+Swap:  4194300k total,     1372k used,  4192928k free,  2347876k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+ 7137 oracle    20   0 5769m 1.2g  41m S  0.7 16.3  10:56.20 java
+ 7546 oracle    20   0 2548m 128m  31m S  0.3  1.7   9:29.96 java
+ 7728 oracle    20   0 5022m 1.5g  58m S  0.3 20.3  34:51.87 java
+    1 root      20   0 19408 1588 1272 S  0.0  0.0   0:02.34 init
+    2 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kthreadd
+    3 root      20   0     0    0    0 S  0.0  0.0   0:00.58 ksoftirqd/0
+    5 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/0:0H
+    6 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0
+    7 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0H
+    8 root      RT   0     0    0    0 S  0.0  0.0   0:00.48 migration/0
+```
+
+top 上の CPU の負荷を後でチェックするためにターミナルは開いたままにする。
+
+次に、Java Cloud Service に対して負荷をかける。負荷生成サンプル・アプリケーションが開かれているブラウザに切り替える。以下のパラメータを設定し、**Submit** をクリックする:
+- CPU 負荷: **Mid**
+- 期間: **400000** ms
+
+![](jpimages/jcs-autoscale26.jpg)
+
+`top` 起動しているターミナルに切り替えて CPU 使用率を確認する。そして Java Cloud Service のスケール・アウト操作が自動スケール・ルールにより起動されるまで待機する。
+
+```bash
+top - 09:11:51 up 6 days,  4:59,  1 user,  load average: 1.25, 0.29, 0.14
+Tasks: 121 total,   1 running, 120 sleeping,   0 stopped,   0 zombie
+Cpu(s):100.0%us,  0.0%sy,  0.0%ni,  0.0%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:   7660116k total,  6119884k used,  1540232k free,   374628k buffers
+Swap:  4194300k total,     1372k used,  4192928k free,  2347944k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+ 7137 oracle    20   0 5770m 1.4g  41m S 207.0 18.5  11:37.56 java
+    1 root      20   0 19408 1588 1272 S  0.0  0.0   0:02.34 init
+    2 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kthreadd
+    3 root      20   0     0    0    0 S  0.0  0.0   0:00.59 ksoftirqd/0
+    5 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/0:0H
+    6 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0
+    7 root       0 -20     0    0    0 S  0.0  0.0   0:00.00 kworker/u:0H
+    8 root      RT   0     0    0    0 S  0.0  0.0   0:00.48 migration/0
+    9 root      20   0     0    0    0 S  0.0  0.0   0:00.00 rcu_bh
+   10 root      20   0     0    0    0 S  0.0  0.0   0:35.33 rcu_sched
+```
