@@ -53,19 +53,19 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 - [TechCo (Java EE) サンプル・アプリケーション用 Database Cloud Service の準備](dbcs-prepare/README.md)
 - [TechCo (Java EE) サンプル・アプリケーションの Java Cloud Service へのデプロイ](jcs-deploy/README.md)
 
-####Manage Oracle Java Cloud Service using UI and PaaS Service Manager####
+#### UI と PaaS Service Manager を用いた Java Cloud Service の管理
 
 - [Java Cloud Service のダイレクト・アクセス及び管理](jcs-direct/README.md)
 - [UI を用いた Java Cloud Service クラスタのスケール・アウト](jcs-scale-ui/README.md)
 - [PSM コマンド・ライン・インターフェースを用いた Java Cloud Service のスケール・イン](jcs-scale-psm/README.md)
 
-####Making Java Cloud Service elastically scalable through Policy based Auto-scaling####
+#### 自動スケール・ポリシーによる Java Cloud Service のエラスティック・スケール
 
-+ [Oracle Java Cloud Service Policy Based Auto Scaling](jcs-autoscale/README.md)
+- [Java Cloud Service 自動スケール・ポリシー](jcs-autoscale/README.md)
 
-####Upgrade WebLogic Server 11g (10.3.6) running on premise to 12cR2 with Multitenancy and migrate to Java Cloud Service####
+#### オンプレミス WebLogic Server 11g (10.3.6) の 12cR2 マルチテナントへのアップグレード及び、Java Cloud Service への移行
 
-+ [Convert WebLogic 11g domain into the 12cR2 partition using DPCT (Domain to Partition Conversion Tool)](dpct/README.md)
+- [DPCT (Domain to Partition Conversion Tool) を用いた WebLogic 11g ドメインから WebLogic 12cR2 ドメイン・パーティションへの変換](dpct/README.md)
 + [Move partition from WebLogic Server 12cR2 to Oracle Java Cloud Service](lift-and-shift/README.md)
 
 ####Migrate WebLogic 10.3.6 (on premise) Application to Java Cloud Service with App2Cloud tool ####
