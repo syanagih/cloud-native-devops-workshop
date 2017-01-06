@@ -68,9 +68,9 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 - [DPCT (Domain to Partition Conversion Tool) を用いた WebLogic 11g ドメインから WebLogic 12cR2 ドメイン・パーティションへの変換](dpct/README.md)
 - [WebLogic Server 12cR2 から Java Cloud Service へドメイン・パーティションの移動](lift-and-shift/README.md)
 
-####Migrate WebLogic 10.3.6 (on premise) Application to Java Cloud Service with App2Cloud tool ####
+#### オンプレミス WebLogic Server 10.3.6 アプリケーションの Java Cloud Service 移行
 
-+ [Migrate Weblogic 10.3.6 (on premise) Application to Java Cloud Service with App2Cloud tool](app-2-cloud/README.md)
+- [オンプレミス WebLogic Server 10.3.6 アプリケーションの Java Cloud Service 移行](app-2-cloud/README.md)
 
 ####Clean up the environment####
 
