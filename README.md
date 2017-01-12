@@ -36,7 +36,7 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 
 #### Java Mission Control と Java Flight Recorder の診断機能を用いた Application Container Cloud Service で稼働するアプリケーションのモニタリング
 
-- [Application Conytainer Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
+- [Application Container Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
 
 #### Management Cloud Service を用いた 継続的デリバリとアプリケーション監視とテレメトリの統合
 
