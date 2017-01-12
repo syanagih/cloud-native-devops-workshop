@@ -36,10 +36,11 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 
 #### Java Mission Control と Java Flight Recorder の診断機能を用いた Application Container Cloud Service で稼働するアプリケーションのモニタリング
 
-- [Application Conytainer Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
+- [Application Container Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
 
-#### Integrate telemetry into continuous delivery and monitor an application using the Oracle Management Cloud
-- [Deploying APM Agent on Apache Tomcat based application and setting up Application Performance Monitoring](apm/README.md)
+#### Management Cloud Service を用いた 継続的デリバリとアプリケーション監視とテレメトリの統合
+
+- [APM エージェントのデプロイと Application Performance Monitoring のセットアップ](apm/README.md)
 
 #### Application Conainer Cloud Service での軽量 Java コンテナ(Tomcat) の実行
 
@@ -68,9 +69,9 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 - [DPCT (Domain to Partition Conversion Tool) を用いた WebLogic 11g ドメインから WebLogic 12cR2 ドメイン・パーティションへの変換](dpct/README.md)
 - [WebLogic Server 12cR2 から Java Cloud Service へドメイン・パーティションの移動](lift-and-shift/README.md)
 
-####Migrate WebLogic 10.3.6 (on premise) Application to Java Cloud Service with App2Cloud tool ####
+#### オンプレミス WebLogic Server 10.3.6 アプリケーションの Java Cloud Service 移行
 
-+ [Migrate Weblogic 10.3.6 (on premise) Application to Java Cloud Service with App2Cloud tool](app-2-cloud/README.md)
+- [オンプレミス WebLogic Server 10.3.6 アプリケーションの Java Cloud Service 移行](app-2-cloud/README.md)
 
 ####Clean up the environment####
 
