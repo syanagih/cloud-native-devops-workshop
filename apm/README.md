@@ -1,44 +1,46 @@
 ![](../common/images/customer.logo.png)
 ---
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 -----
-## Deploying APM Agent and setting up Application Performance Monitoring ##
+## APM エージェントのデプロイと Application Performance Monitoring のセットアップ
 
-### Introduction ###
-Oracle Application Performance Monitoring Cloud Service is a software-as-a service solution that provides deep visibility into your application performance from end-user experience, through application server requests, and down to application logs. With Oracle Application Performance Monitoring Cloud Service you can isolate problems before they impact your business, break down the barriers between Development and Operations teams and deliver better applications.
+### 説明
+Oracle Application Performance Monitoring Cloud Service は、エンドユーザー体験 (UX) からアプリケーション・リクエストやアプリケーションログまでを通してアプリケーションの性能に対する可視性を提供する Software as a Service である。Oracle Application Performance Monitoring Cloud Service により、業務影響が発生する事前に問題を取り除いたり、開発チームと運用チームの間の壁を取り除き、より優れたアプリケーションを提供できるようになる。
 
 ![](images/apm.architecture.png)
 
-By incorporating metrics and telemetry into your DevOps and continuous delivery pipeline,
+このチュートリアルでは、APMを継続的デリバリのフローに統合し、ビルドプロセスの中で APM エージェントのセットアップとインストールが自動で組みこまれ、継続的な計測内容を確認する。Application Performance Monitoring Web ユーザインターフェースを使用して、デモアプリケーションに関する必要な詳細情報を監視する事が可能になる。
 
-In this tutorial, we will integrate APM into a continuous delivery flow to automatically incorporate the setup and installation of the APM agent during the build process, to ensure that we have continuous telemetry. Using the Application Performance Monitoring Web User Interface you can monitor all necessary details about the demo application.
+このセットアップを行うと、APM がビルド中にアプリケーションに導入される。そのため、エージェントのデプロイ作業について考慮することなく計測を行う事が可能になる。
+ploying agents.
 
-Once this is setup, the APM will be introduced into the application automatically during the build  and we will be able to get telemetry without further thinking about the process of deploying agents.
+### チュートリアルについて
+このチュートリアルは、以下を実施する:
 
-### About this tutorial ###
-This tutorial demonstrates how to:
+- Application Perfomance Monitoring Cloud Service にアクセスする
+- エージェント・マスター・インストーラをダウンロードする
+- APM エージェントを DevCS による継続的デリバリフローに組み込む
+- Application Performance Monitoring をセットアップする
+- Application Performance Monitoring の使い方を学ぶ
+- Apache Tomcat に APM エージェントを手動デプロイする
 
-+ Access Application Performance Monitoring Cloud Service
-+ Download the Agent Master Installer
-+ Incorporate APM Agent into an automated DevCS continuous delivery flow
-+ Set Up Application Performance Monitoring
-+ How to Use Application Performance Monitoring
-+ Manually deploy the APM Agent into Apache Tomcat
+### 前提
 
-### Prerequisites ###
+- 以下の Oracle Public Cloud Service が利用できるアカウントを保有している事:
+  - Application Performance Monitoring Cloud Service
+	- Application Container Cloud Service
 
-+ Oracle Public Cloud Services account including:
-	+ Application Performance Monitoring Cloud Service
-	+ Application Container Cloud Service
-	+ [springboot-sample Tutorial](../springboot-sample/)
+- チュートリアル: [Developer Cloud Service を利用したSpring Boot サンプル・アプリケーションのApplication Container Cloud Service へのデプロイ](../springboot-sample/) を実施済みである事
 
-### Steps ###
 
-#### Complete the springboot-sample tutorial ####
-Complete the [springboot-sample tutorial](../springboot-sample/) to set up a continuous delivery pipeline from source control to ACCS deployment for our sample application.
+### 手順
 
-#### Prepare Notes ####
-There will be a number of keys, urls, and URI strings that you will need to keep track of across the setup process. To keep this clear in your head, create a Snippet (in a separate browser window/tab) or a text file with the following template, which we will fill in as we go along.
+#### Spring Boot チュートリアルの完了
+チュートリアル: [Developer Cloud Service を利用したSpring Boot サンプル・アプリケーションのApplication Container Cloud Service へのデプロイ](../springboot-sample/) を完了させる。この作業後、ソース管理から ACCS へのデプロイを行う継続的デリバリー・パイプラインをセットアップする。
+
+#### 備忘ノード
+セットアップ作業を通して必要となるいくつかの情報がある。忘れないように次のテンプレートを使用して控えておく。
+
 ```
 Maven Base URL:
 Agent Install Zip Path:
@@ -52,54 +54,83 @@ WAR_FILE:
 ```
 ![](images/snippet.png)
 
-#### Download the Oracle Management Cloud Master Installer & Registration Key ####
+#### Oracle Management Cloud マスター・インストーラとレジストレーション・キーのダウンロード
 
-The master installer is the starting point for all client-side Oracle Management Cloud components, such as the gateway, Cloud Agent, and APM Agent. In order to integrate APM into our build, we will need to supply this installer to our build process. To do this, we will start by downloading the tenant-specific master installer.
+マスター・インストーラは、全ての クライアントサイドのOracle Management Cloud Service コンポーネントのスタート・ポイントである。例えば、ゲートウェイ、クラウド・エージェント、APM エージェントである。APM をビルドに統合するために、ビルドプロセスにマスター・インストーラを与える必要がある。実施するために、テナント固有のマスター・インストーラをダウンロードする事から着手する。
 
-Download the master installer for your tenant and make note of a valid registration key. We will incorporate these into our build process to automatically deploy the agent.
+使用しているテナントのマスター・インストーラをダウンロードし、レジストレーション・キーの確認を行う。エージェントの自動デプロイのためにこれらをビルド・プロセスに組み込む。
 
-[Sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign_in](https://cloud.oracle.com) and go to Dashboard Page. Click **Launch APM**.
+Oracle Cloud へサインインする[(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。そして、ダッシューボード画面を表示し、右上部の  **Launch APM** をクリックする。
 
-If you have separate Oracle Management Cloud Service access, for example in case of trial use the proper identity domain and credentials to login.
+別のアイデンティティドメインにある Management Cloud Service を使用する場合、例えばトライアル利用の場合、適切なアイデンティティドメインと認証情報を使用してログインを行う。
 
-Once you have reached the Oracle Cloud Management Cloud Welcome page click **Application Navigator** and on the drop down list select **Administration** -> **Agents**
-![](images/01.apm.welcome.png)
+Management Cloud Service のウェルカム・ページが表示されたら、画面上部にあるコンパス型アイコンで表示されている **Application Navigator** をクリックし、ドロップダウンリストから **Administration** -> **Agents** を選択する。
 
-On the left menu select **Download** and click on the green download icon.
+![](images/a.navi-agent.png)
+
+
+左部メニューから、**Download** を選択肢、緑色のダウンロード・アイコンをクリックする。
+
 ![](images/02.download.installer.png)
 
-Save the AgentInstall.zip file.
 
-Locate a **valid** registration key with a large maximum that we will use for agent deployment. Click **Registration Keys** on the left side menu. Copy-paste your Registration Key value into your notes for AGENT_REGISTRATION_KEY.
+**AgentInstall.zip** を保存する。
+
+エージェント・デプロイメントに使用するレジストレーション・キーの一覧から、**Status: valid** かつ利用できる数が最大のものを選択する。**Key Value** に記載されているレジストレーション・キーを先のノートの AGENT_REGISTRATION_KEY に控えておく。
+
 ![](images/05.read.reg.key.png)
 
-#### Upload Build Artifacts to Maven ####
-Now that we have downloaded the necessary master installer, we will need to make it available to our automated build process. We will use the DevCS Maven repository for this purpose. By uploading the master installer to the Maven repository, our build scripts will be able to download and use it to integrate the necessary agent components into our application.
 
-Log into the Developer Cloud Service and navigate to the Maven repository's **Upload** page
+#### ビルド成果物の Maven へのアップロード
+
+自動ビルドプロセスに必要となるマスター・インストーラをダウンロードを行った。これを DevCS の Maven リポジトリで使用する。Maven リポジトリにマスター・インストーラをアップロードする事で、ビルド・スクリプトがインストーラをダウンロードし、アプリケーションにエージェント・コンポーネントを統合するために使用する。
+
+Developer Cloud Service にログインし、Maven リポジトリの **Upload** タブを開く。
+
 ![](images/devcs-maven.png)
 
-Upload the AgentInstall.zip that you downloaded previous from the Oracle Management Cloud UI.
+先にダウンロードしていた AgentInstall.zip を Management Cloud の UI からアップロードする。アップロードする際には以下のオプションの設定を行う:
+
+- Specify Maven Coordinates: **Manually**
+- GroupId: 識別ID (例. com.oracle)
+- ArtifactId: 成果物名 (デフォルトのまま AgentInstall)
+- Version: 適当なバージョン
+- Packaging: パッケージ種別 (デフォルトのまま zip)
+- Generate POM: チェックする
+
+**Start Upload** をクリックする。
+
 ![](images/devcs-maven-upload.png)
 
-Wait for the upload to complete successfully and then proceed to the next step.
+アップロードが正常終了するまで待機し、次の手順に進む。
+
 ![](images/devcs-maven-upload-success.png)
 
-#### Determine the URL for the Maven Artifacts ####
-We will need to supply repository download URLs to the build scripts, which we will collect from the UI in this step.
 
-Return to Browse mode and then make note of the repository URL contained with the Distribution Management XML. Copy-paste this URL into your notes as *Maven Base URL*. Then, navigate to our artifact by clicking on the version number in the list of artifact directories.
+#### Maven 成果物の URL の決定
+
+ビルスクリプトにはダウンロード URL が必要である。ここの手順では、ユーザ・インターフェースから取得する。
+
+**Browse** タブに戻り、Distribution Management XML に含まれるリポジトリURL を先のノートの Maven Base URL として控えておく。そして成果物ディレクトリのリストのバージョン番号をクリックし、成果物を表示する。
+
 ![](images/devcs-maven-url.png)
 
-Now we're in the folder for our artifact. Click on the zip file and make note of the repository path. Copy-paste this path into your notes as *Agent Install Zip Path*.
+
+成果物が表示されたら、zip ファイルをクリックして **Repository Path** を先のノートの Agent Install Zip Path に控えておく。
+
 ![](images/devcs-maven-path.png)
 
-Append the *Agent Install Zip Path* to the end of the *Maven Base URL* that we just wrote down, correcting for any redundant slashes (/) in the full URL. Enter this full URL into your notes as AGENTINSTALL_ZIP_URL.
 
-#### Update the Build ####
-Now we'll return to our previous build and modify its configuration to run our APM-enabled build process. The script we are using here will package up the application as a Tomcat server based application and set up the APM agent automatically. The script will call maven to execute the springboot-sample code, and will additionally set up a Tomcat server and integrate APM into the Tomcat server. The deployment model in this case will be a WAR file based deployment, which means that our application will be served by Tomcat under a URI prefix derived from the WAR file name.
+*Agent Install Zip Path* を *Maven Base URL* の末尾に連結し、冗長になるスラッシュ (/) をURL から修正したものを、先のノートの AGENTINSTALL_ZIP_URL に控える。
 
-First, come up with a short unique string (like your name or tenant identity domain) that will be used as the URI prefix for you application. Enter your chosen string as *URI Prefix* in your notes. Use the prefix as the name of your war file by appending ".war" to the end, like "trial021.war". Record this name as WAR_FILE in your notes.
+#### ビルドの更新
+
+前のビルドに戻り APM を有効にするビルドプロセスを実行するためにビルド構成の修正を行う。ここで使用するスクリプトは、アプリケーションベースの Tomcat サーバとしてアプリケーションをパッケージし、APM エージェントを自動でセットアップするものである。このスクリプトが springboot-sample のコードを実行するために Maven を呼び出し、さらに Tomcat サーバをセットアップしして APM と統合させる。この場合のデプロイメント・モデルは WAR ファイルである。よって、WAR ファイル名からの URI プレフィックス配下で Tomcat によりアプリケーションが稼働する。
+
+まず、短くユニークになる文字列 (名前やアイデンティティドメイン名など) をアプリケーションの URI プレフィックスとして使用する事を考える。選択した文字列を先のノートの URI Prefix に控える。末尾に ".war" を結合して WAR ファイルの名前としてプレフィックスに使用する。例えば、"traial021.war" のようになる。この名前を先のノートの WAR_FILE に控える。
+
+
+ビルドジョブに戻り、**Configure** 画面に移動する。新しく **Execute shell** ビルド・ステップを追加する。ノートとして控えた インストーラへの URL やレジストレーション・キー、WAR ファイルの名前を確認する。以下のコマンドの <> を控えたノートの内容で置き換える。
 
 Return to the `springboot_build` build job and navigate to its **Configure** section. Add a new **Execute shell** build step. Refer back to the full URL to our installer within Maven, the registration key that we collected in the previous steps, and your chose war file name. Substitute them into the appropriate <> within the Command as follows:
 ```
@@ -111,97 +142,125 @@ cd apm
 ```
 ![](images/build-steps.png)
 
+このビルドスクリプトは `apm/application.zip` を生成する。そして **Post Build** 構成を適切に更新する必要がある。そして **Save** をクリックすつ。
 This build script will generate `apm/application.zip`, so we will need to update the **Post Build** configuration appropriately, and then **Save**
 ![](images/build-post.png)
 
-Return to our build screen and trigger a build using **Build Now**
+ビルド画面に戻り **Build Now** をクリックする。
+
 ![](images/build-build.png)
 
-Monitor the progress of the build in the console and wait for the build to complete successfully before moving on.
+コンソールでビルドの進捗を監視し、ビルドの正常終了を待つ。
 
 #### Update the Deploy ####
-Since our file to archive has been changed, we will need to update the Deploy configuration to match.
+
+アーカイブファイルが変わっているので、デプロイ構成の更新が必要である。
+
 ![](images/deploy-edit.png)
 
-Ensure that `apm/application.zip` is specified as the Artifact. You may need to temporarily flip the **Type** to "On Demand" and pick you most recent build in order for the new artifact to show up, then return the type to "Automatic". Once done, **Save** the configuration.
+`apm/application.zip` が成果物とて指定さえれる事を確認する。**Type** を"On Demand" に一時的に変更し、最新の成果物を表示する必要がある。表示できたら Type を "Automatic" に戻し、構成内容を **Save** する。
+
 ![](images/deploy-configuration.png)
 
-A deployment should be immediately triggered. Monitor its progress and wait for it to complete successfully before proceeding.
+再デプロイメントを開始する。進捗を監視しながら正常終了を待つ。
 
-#### Validating the Application ####
+#### アプリケーションの妥当性確認
 
-Now let's make sure that the application deployment was successful and is returning telemetry.
+アプリケーションのデプロイが成功しているかを確認する。
 
-Point your browser at:
+ブラウザで次の URL を入力する。
 
-```https://<your ACCS URL>/<URI prefix from your notes>```
+- `https://<ACCSインスタンスのURL>/<URI prefix>`
+  - ACCS インスタンスの URL は、ACCS コンソール画面に表示される対象インスタンスの URL
 
-Verify that the springboot-sample looks the same as it did before.
+springboot-sample が以前同様に表示される事を確認する。
 
-Next, let's what's going on in the page. In Chrome or Firefox, press Control-Shift-I to bring up the browser inspector. With the inspector open, visit the following URL:
+次に、ブラウザ (Chrome 又は Firefox) で `Ctrl + Shift + I` を押すと、ブラウザ組み込みの開発ツールが開く。開かれた後、次の　URL を入力する:
 
-```https://<your ACCS URL>/<URI prefix>/angular.html```
+- `https://<ACCSインスタンスのUR>/<URI prefix>/angular.html`
 
-You should land on a sample single-page web app, and see in the Network tab of the inspector that there are calls to `collector`. Those calls represent browser telemetry being returned to APM.
+するとシングルページ・アプリケーションが開かれるので、開発ツールで **ネットワーク** タブを開き `collector` を呼び出しが一覧にある事を確認する。この呼び出しは ブラウザの測定内容を APM に集めている事を表している。
+
 ![](images/apm-browser.png)
 
-Click on the various samples on this page to see what they do.
+このページ上をクリックし挙動を見てみる。
 
-#### Set Up Application Performance Monitoring ####
+#### Application Performance Monitoring のセットアップ
 
-[Sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign_in](https://cloud.oracle.com) and go to Dashboard Page. Click **Launch APM**.
+Oracle Cloud へサインインする[(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。そして、ダッシューボード画面を表示し、右上部の  **Launch APM** をクリックする。
 
-If you have separate Oracle Management Cloud Service access, for example in case of trial use the proper identity domain and credentials to login.
+Management Cloud Service の ウェルカム・ページが表示されたら、**Application Performance Monitoring** をクリックする。
 
-Once you have reached the Oracle Cloud Management Cloud Welcome page click **Application Performance Monitoring**.
 ![](images/15.apm.welcome.png)
 
-Now you can see the landing page of APM. This is a dashboard which contains the top metrics. Click the hamburger icon on the left side next to the **Home** text.
+
+APM のホーム画面を開くと、メトリクス情報が表示されているダッシュボードが表示されている。**Home** の左横のハンバーガメニューをクリックする。
+
 ![](images/16.apm.home.png)
 
-Click the last **Administration** menu item.
+
+メニューアイテムから **Administration** メニューをクリックする。
+
 ![](images/16.apm.home.admin.png)
 
-Click the **Application definitions** menu item.
+
+次にメニューアイテムから **Application definitions** をクリックする。
+
 ![](images/17.apm.home.admin.application.png)
 
-Here you can define new application definition. This definition ensures that your application(s) will have a single pane view. Click **Create Application Definition**.
+ここで新しいアプリケーションの定義を行う事ができる。**Create Application Definition** をクリックする。
+
 ![](images/18.apm.app.def.png)
 
-On the Application Specification dialog define the criteria which is unique to your application or environment. We will use the customized *URI Prefix* that we chose earlier as the identifier for our application. The Application Name can be anything but it is useful to use similar name to context path. Please note the Application Name can not contain '-'. Select **Pages** for criteria and choose **URL**. The pattern for URL should be *URI Prefix* from your notes. Check your application URL in the browser to find the right context path/criteria. Click **OK** for the criteria and then **Save** the Application Definition.
+
+**Application Specification** ダイアログでアプリケーションや環境に固有の評価基準を定義する事ができる。ここではアプリケーションの定義に使用した **URI Prefix** を使用する。アプリケーション名は何してもよいが、コンテキスパス名にしておくと便利である。アプリケーション名はハイフン (-) を含むことができない事を注意する。評価基準には **Pages** 選択して **URL** を選択し、**URI Prefix** を含むように設定し **OK** をクリックする。**Save** をクリックしアプリケーション定義を保存する。
+
 ![](images/19.app.spec.criteria.png)
 
-Now go back to the Applications page using the left side menu. Click the hamburger icon and select the **Back** arrow then the **Applications** menu item.
+左部メニューから **Applications** メニューを選択する。
+
 ![](images/20.back.to.applications.png)
+
 
 ![](images/20.back.to.applications.2.png)
 
-Now you should see your newly defined Applications. Create some load (Ctrl+Refresh the applications page) on your applications to get some statistics.
+
+アプリケーションの定義ができた事が確認できる。リロードすると、計測情報が更新される。
+
 ![](images/21.applications.png)
 
-#### Generate Load ####
-To generate a reasonable amount of data, do the following about 4-5 times per minute over a period of 5-10 minutes:
-+ Click on the different buttons on the page.
-+ Click the **Compute* button a few extra times
-+ Try entering `1048576` into **Return Array Index** and see what comes back when you press **Compute**.
-+ Reload the page and do the above sequence a few more times
 
-#### Use APM to Understand Application Behavior ####
-Navigate back into your application in APM, and set the time frame to the last 15 minutes:
+#### 計測データ生成
+
+適度な量のデータを生成するために 5から10分以上の間隔で 4-5 回以下の操作を実施する:
+
+- ページ上のいろいろなボタンをクリックする
+- **Compute** ボタンを数回クリックする
+- **Return Array Index** に `1048576` を入力し、**Compute** ボタンをクリックする
+- ページをリロードし数回上記操作を実施する
+
+#### アプリケーションの振る舞いの理解のための APM の使用
+
+APM 上でのアプリケーション画面に戻り、時間範囲を **last 15 minutes** に設定する:
+
 ![](images/apm-time.png)
 
-Try use the product and navigate the APM UI answer the following questions:
+APM を使用して次の問題を考えてみよう:
 
-Can you figure out how much memory is allocated for each execution of the sum of random integers? Does this amount seem correct?
+乱数の合計の実行に割り当てられているメモリはどの程度か？
+
 ![](images/apm-randomsum-samples.png)
+
+Quote 機能が静的データの使用か外部の Web サービスの呼び出しを行うか判別可能か？
 
 Can you tell whether the quote functionality uses static data or makes a real external web service call?
 ![](images/apm-quote.png)
 
-Can you tell which button clicks result in AJAX calls and which do not? Can you determine the cause of the behavior when you click **Compute* with 1048576 in *Return Array Index*?
+どのボタンをクリックすると AJAX 呼び出しが発生するか、どのボタンが発生しないか判別できるか？*Return Array Index* に `1048576` を入力して **Compute** をクリックした際の振る舞いの原因が分かるか？
+
 ![](images/apm-eum-session.png)
 
-This concludes the required parts of this tutorial.
+このチュートリアルは以上となる。
 
 #### (Optional) Installing and Provisioning APM Java Agent on Apache Tomcat (or other Java EE application servers) Manually ####
 

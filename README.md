@@ -38,8 +38,9 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 
 - [Application Conytainer Cloud Service 上のSpring Boot アプリケーションの監視及びチューニング](monitor-tune/README.md)
 
-#### Integrate telemetry into continuous delivery and monitor an application using the Oracle Management Cloud
-- [Deploying APM Agent on Apache Tomcat based application and setting up Application Performance Monitoring](apm/README.md)
+#### Management Cloud Service を用いた 継続的デリバリとアプリケーション監視とテレメトリの統合
+
+- [APM エージェントのデプロイと Application Performance Monitoring のセットアップ](apm/README.md)
 
 #### Application Conainer Cloud Service での軽量 Java コンテナ(Tomcat) の実行
 
