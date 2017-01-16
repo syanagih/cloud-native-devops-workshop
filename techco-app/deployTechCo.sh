@@ -37,17 +37,17 @@ cd ../techco-app
 
 mvn install
 
-./init-dbcs-pdb.sh system $DBA_PASS ../$PK_FILE $DBCS_IP
+./init-dbcs-pdb.sh system $DBA_PASS ../cloud-utils/$PK_FILE $DBCS_IP
 
 echo "Database Cloud Service has been prepared."
 
 cp etc/wlst/deploy-TechCo.py.template etc/wlst/deploy-TechCo.py
 sed "s|@wls.admin.user@|$WLS_USER|g; s|@wls.admin.password@|$WLS_PASSWORD|g; s|@database.dba.pass@|$DBA_PASS|g; s|@jcs.instance@|$JCS_INSTANCE|g; s|@database.instance.1@|$DBCS_INSTANCE|g; s|@identity.domain@|$OPC_DOMAIN|g;" -i etc/wlst/deploy-TechCo.py
 
-scp -oStrictHostKeyChecking=no -i ../$PK_FILE target/TechCo-ECommerce-1.0-SNAPSHOT.war etc/wlst/deploy-TechCo.py etc/wlst/deploy-TechCo.sh opc@$JCS_IP:/tmp
+scp -oStrictHostKeyChecking=no -i ../cloud-utils/$PK_FILE target/TechCo-ECommerce-1.0-SNAPSHOT.war etc/wlst/deploy-TechCo.py etc/wlst/deploy-TechCo.sh opc@$JCS_IP:/tmp
 
-ssh -oStrictHostKeyChecking=no -i ../$PK_FILE opc@$JCS_IP "chmod 755 /tmp/deploy-TechCo.py /tmp/deploy-TechCo.sh"
-ssh -t -oStrictHostKeyChecking=no -i ../$PK_FILE opc@$JCS_IP "sudo su - oracle -c /tmp/deploy-TechCo.sh"
+ssh -oStrictHostKeyChecking=no -i ../cloud-utils/$PK_FILE opc@$JCS_IP "chmod 755 /tmp/deploy-TechCo.py /tmp/deploy-TechCo.sh"
+ssh -t -oStrictHostKeyChecking=no -i ../cloud-utils/$PK_FILE opc@$JCS_IP "sudo su - oracle -c /tmp/deploy-TechCo.sh"
 
 rm etc/wlst/deploy-TechCo.py
 

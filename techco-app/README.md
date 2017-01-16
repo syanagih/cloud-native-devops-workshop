@@ -134,7 +134,7 @@ Java Cloud Service にデプロイし起動したアプリケーションをテ�
 
 ```
 $ [oracle@localhost Desktop]$ cd /u01/content/cloud-native-devops-workshop/cloud-utils
-  $ [oracle@localhost cloud-utils]$ mvn -Dgoal=jcs-get-ip
+$ [oracle@localhost cloud-utils]$ mvn -Dgoal=jcs-get-ip
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
