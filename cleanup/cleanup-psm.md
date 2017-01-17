@@ -1,167 +1,187 @@
 ![](../common/images/customer.logo.png)
 ---
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 ----
-## Delete Application Cloud Container Service using PaaS Service Manager (PSM) Command Line Interface (CLI) ##
+## PaaS Service Manager (PSM) コマンド・ライン・インターフェース を用いた Application Container Cloud Service インスタンスの削除
 
-### About this tutorial ###
+### チュートリアルについて
 
-This tutorial demonstrates how to delete Application Container Cloud Service PaaS Service Manager (PSM) Command Line Interface (CLI).
-	
-### Prerequisites ###
+このチュートリアルでは、PaaS Service Manager (PSM) コマンド・ライン・インターフェース を用いて Application Container Cloud Service インスタンスを削除する。
 
-+ [Deploy Tomcat sample application to Oracle Application Container Cloud](../accs-tomcat/README.md)
-+ [Install and configure PaaS Service Manager (PSM) Command Line Interface (CLI)](../jcs-scale-psm/README.md)
+### 前提
 
-### Steps ###
+以下のチュートリアルを実施済み、または削除するインスタンスが存在する事:
 
-#### Delete Application Cloud Container Service using psm CLI tool ####
+- [Tomcat ベースのアプリケーションを Application Container Cloud Service へデプロイ](../accs-tomcat/README.md)
 
-Open a terminal and list your application(s) deployed on Application Container Cloud Service. Execute the `psm accs apps` command to list the applications.
+また、以下のチュートリアルで実施した PaaS Service Manager (PSM) コマンド・ライン・インターフェース のインストールがされている事
+- [PSM コマンド・ライン・インターフェースを用いた Java Cloud Service のスケール・イン](../jcs-scale-psm/README.md)
 
-	[oracle@localhost cloud.demos]$ psm accs apps
-	{
-	    "applications":[
-	        {
-	            "identityDomain":"hujohni",
-	            "appId":"7c0ab2ad-a1c3-482c-8542-add237657212",
-	            "name":"tomcat",
-	            "status":"RUNNING",
-	            "createdBy":"john.i.smith@freemail.hu",
-	            "creationTime":"2016-08-28T08:02:46.503+0000",
-	            "lastModifiedTime":"2016-08-28T08:02:46.458+0000",
-	            "subscriptionType":"MONTHLY",
-	            "instances":[
-	                {
-	                    "name":"web.1",
-	                    "status":"RUNNING",
-	                    "memory":"2G",
-	                    "instanceURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/instances/web.1"
-	                }
-	            ],
-	            "runningDeployment":{
-	                "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
-	                "deploymentStatus":"READY",
-	                "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
-	            },
-	            "lastestDeployment":{
-	                "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
-	                "deploymentStatus":"READY",
-	                "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
-	            },
-	            "appURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat",
-	            "webURL":"https://tomcat-hujohni.apaas.em2.oraclecloud.com"
-	        }
-	    ]
-	}
-	[oracle@localhost cloud.demos]$ 
+### 手順
 
-You should have one application called **tomcat**. Now you need the command which deletes Application Container Cloud Service. Execute the help to get this command:
+#### PSM CLI を用いた Application Container Cloud Service インスタンスの削除
 
-	[oracle@localhost cloud.demos]$ psm accs help
+ターミナルを開き、Application Containr Cloud Service にデプロイされているアプリケーション一覧を表示する。以下のコマンドを実行して、アプリケーション一覧を取得する:
 
-	DESCRIPTION
-	  Oracle Application Container Cloud Service
-	
-	SYNOPSIS
-	  psm accs <command> [parameters]
-	
-	AVAILABLE COMMANDS
-	  o apps
-	       List all Oracle Application Container Cloud applications
-	  o app
-	       List an Oracle Application Container Cloud application
-	  o push
-	       Create or Update an Oracle Application Container Cloud application
-	  o scale
-	       Scale an Oracle Application Container Cloud Service instance for a...
-	  o delete
-	       Delete an Oracle Application Container Cloud application
-	  o stop
-	       Stop an Oracle Application Container Cloud application
-	  o start
-	       Start an Oracle Application Container Cloud application
-	  o restart
-	       Restart an Oracle Application Container Cloud application
-	  o logs
-	       List log details of all the instances of an Oracle Application Container...
-	  o log
-	       View log details of an instance of an Oracle Application Container Cloud...
-	  o get-logs
-	       Request for log details of an instance of an Oracle Application Container...
-	  o recordings
-	       View recording details of all the instances of an Oracle Application...
-	  o recording
-	       List recording details of an instance of an Oracle Application Container...
-	  o get-recordings
-	       Request for recording details of an instance of an Oracle Application...
-	  o operation-status
-	       View status of an Oracle Application Container Cloud application operation
-	  o help
-	       Show help
-	
-	[oracle@localhost Desktop]$ 
+- `psm accs apps`
 
-The command is `delete`. Check the syntax of this command using help again:
+```
+$ psm accs apps
+{
+    "applications":[
+        {
+            "identityDomain":"shinyayjan",
+            "appId":"2349df27-fec1-4b14-9009-b530416aa684",
+            "name":"springboot",
+            "status":"RUNNING",
+            "createdBy":"shinyay",
+            "creationTime":"2017-01-11T13:56:17.577+0000",
+            "lastModifiedTime":"2017-01-11T15:15:03.727+0000",
+            "subscriptionType":"HOURLY",
+            "isClustered":false,
+            "requiresAntiAffinity":false,
+            "computeSite":"EM003_Z18",
+            "instances":[
+                {
+                    "name":"web.1",
+                    "status":"RUNNING",
+                    "memory":"1G",
+                    "instanceURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot/instances/web.1"
+                }
+            ],
+            "runningDeployment":{
+                "deploymentId":"a88f9c87-4c21-4147-8103-280b69b26aac",
+                "deploymentStatus":"READY",
+                "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot/deployments/a88f9c87-4c21-4147-8103-280b69b26aac"
+            },
+            "lastestDeployment":{
+                "deploymentId":"a88f9c87-4c21-4147-8103-280b69b26aac",
+                "deploymentStatus":"READY",
+                "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot/deployments/a88f9c87-4c21-4147-8103-280b69b26aac"
+            },
+            "appURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot",
+            "webURL":"https://springboot-shinyayjan.apaas.em3.oraclecloud.com"
+        }
+    ]
+}
+```
 
-	[oracle@localhost Desktop]$ psm accs delete help
-	
-	DESCRIPTION
-	  Delete an Oracle Application Container Cloud application
-	
-	SYNOPSIS
-	  psm accs delete [parameters]
-	       -n, --app-name <value>
-	       [-of, --output-format <value>]
-	
-	AVAILABLE PARAMETERS
-	  -n, --app-name    (string)
-	       Name of the application
-	
-	  -of, --output-format    (string)
-	       Desired output format. Valid values are [json, html]
-	
-	EXAMPLES
-	  psm accs delete -n ExampleApp
-	
-	[oracle@localhost Desktop]$ 
+デプロイされているアプリケーション情報を取得すると、**name** プロパティにアプリケーション名が表示されている事が確認できる。このアプリケーションを PSM のコマンドを使用して削除を行う。まず、ヘルプでコマンドの情報を確認する:
 
-It requires -obviously- the name of the application. You have the correct syntax and the application name so delete the application.
+- `psm accs help`
 
-	[oracle@localhost Desktop]$ psm accs delete -n tomcat
-	{
-	    "identityDomain":"hujohni",
-	    "appId":"7c0ab2ad-a1c3-482c-8542-add237657212",
-	    "name":"tomcat",
-	    "status":"RUNNING",
-	    "createdBy":"john.i.smith@freemail.hu",
-	    "creationTime":"2016-08-28T08:02:46.503+0000",
-	    "lastModifiedTime":"2016-08-28T08:02:46.458+0000",
-	    "subscriptionType":"MONTHLY",
-	    "instances":[
-	        {
-	            "name":"web.1",
-	            "status":"RUNNING",
-	            "memory":"1G",
-	            "instanceURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/instances/web.1"
-	        }
-	    ],
-	    "runningDeployment":{
-	        "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
-	        "deploymentStatus":"READY",
-	        "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
-	    },
-	    "lastestDeployment":{
-	        "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
-	        "deploymentStatus":"READY",
-	        "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
-	    },
-	    "currentOngoingActivity":"Deleting Application",
-	    "appURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat",
-	    "webURL":"https://tomcat-hujohni.apaas.em2.oraclecloud.com",
-	    "message":[]
-	}
-	Job ID : 1929334
-	[oracle@localhost Desktop]$ 
+```
+$ psm accs help
 
-The delete job has been submitted successfully. The Application Cloud Service termination and clean up takes few minutes. You can check the resullt using the Application Container Cloud user interface or list the applications periodically using `psm accs apps`. 
+DESCRIPTION
+  Oracle Application Container Cloud Service
+
+SYNOPSIS
+  psm accs <command> [parameters]
+
+AVAILABLE COMMANDS
+  o apps
+       List all Oracle Application Container Cloud applications
+  o app
+       List an Oracle Application Container Cloud application
+  o push
+       Create or Update an Oracle Application Container Cloud application
+  o scale
+       Scale an Oracle Application Container Cloud Service instance for a...
+  o delete
+       Delete an Oracle Application Container Cloud application
+  o stop
+       Stop an Oracle Application Container Cloud application
+  o start
+       Start an Oracle Application Container Cloud application
+  o restart
+       Restart an Oracle Application Container Cloud application
+  o logs
+       List log details of all the instances of an Oracle Application Container...
+  o log
+       View log details of an instance of an Oracle Application Container Cloud...
+  o get-logs
+       Request for log details of an instance of an Oracle Application Container...
+  o recordings
+       View recording details of all the instances of an Oracle Application...
+  o recording
+       List recording details of an instance of an Oracle Application Container...
+  o get-recordings
+       Request for recording details of an instance of an Oracle Application...
+  o operation-status
+       View status of an Oracle Application Container Cloud application operation
+  o help
+       Show help
+```
+
+`delete`コマンドが一覧から確認できる。この `delete` コマンドのシンタックスをヘルプで確認する:
+
+- `psm accs delete help`
+
+```
+$ psm accs delete help
+
+DESCRIPTION
+  Delete an Oracle Application Container Cloud application
+
+SYNOPSIS
+  psm accs delete [parameters]
+       -n, --app-name <value>
+       [-of, --output-format <value>]
+
+AVAILABLE PARAMETERS
+  -n, --app-name    (string)
+       Name of the application
+
+  -of, --output-format    (string)
+       Desired output format. Valid values are [json, html]
+
+EXAMPLES
+  psm accs delete -n ExampleApp
+```
+
+ヘルプによるとアプリケーションの名前が必要な事が分かる。シンタックスとアプリケーション名が分かったので、アプリケーションを削除する:
+
+- psm accs delete -n <アプリケーション名>
+
+```
+$ psm accs delete -n springboot
+{
+    "identityDomain":"shinyayjan",
+    "appId":"2349df27-fec1-4b14-9009-b530416aa684",
+    "name":"springboot",
+    "status":"RUNNING",
+    "createdBy":"shinyay",
+    "creationTime":"2017-01-11T13:56:17.577+0000",
+    "lastModifiedTime":"2017-01-11T15:15:03.727+0000",
+    "subscriptionType":"HOURLY",
+    "isClustered":false,
+    "requiresAntiAffinity":false,
+    "computeSite":"EM003_Z18",
+    "instances":[
+        {
+            "name":"web.1",
+            "status":"RUNNING",
+            "memory":"1G",
+            "instanceURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot/instances/web.1"
+        }
+    ],
+    "runningDeployment":{
+        "deploymentId":"a88f9c87-4c21-4147-8103-280b69b26aac",
+        "deploymentStatus":"READY",
+        "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot/deployments/a88f9c87-4c21-4147-8103-280b69b26aac"
+    },
+    "lastestDeployment":{
+        "deploymentId":"a88f9c87-4c21-4147-8103-280b69b26aac",
+        "deploymentStatus":"READY",
+        "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot/deployments/a88f9c87-4c21-4147-8103-280b69b26aac"
+    },
+    "currentOngoingActivity":"Deleting Application",
+    "appURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/shinyayjan/springboot",
+    "webURL":"https://springboot-shinyayjan.apaas.em3.oraclecloud.com",
+    "message":[]
+}
+Job ID : 3619562
+```
+
+削除ジョブが正常にサブミットされた。Application Container Cloud Service インスタンスの削除には数分かかる。削除の結果は、Application Container Cloud Service の コンソール画面、又は PSM コマンド `psm accs apps` を使用して確認を行う事ができる。
