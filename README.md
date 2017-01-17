@@ -73,10 +73,10 @@ NOTE: 最初に Oracle Public Cloud Service を使い始める前に、あなた
 
 - [オンプレミス WebLogic Server 10.3.6 アプリケーションの Java Cloud Service 移行](app-2-cloud/README.md)
 
-####Clean up the environment####
+#### 環境のクリーンアップ
 
-+ [Delete Java Cloud, Database Cloud and Database Container Services using user interface](cleanup/cleanup-ui.md)
-+ [Delete Application Cloud Container Service using PaaS Service Manager (PSM) Command Line Interface (CLI)](cleanup/cleanup-psm.md)
+- [UI を用いた Java Cloud Service, Database Cloud Service 及び Application Container Cloud Service インスタンスの削除](cleanup/cleanup-ui.md)
+- [PSM CLI を用いた Application Container Cloud Service インスタンスの削除](cleanup/cleanup-psm.md)
 
 ---
 

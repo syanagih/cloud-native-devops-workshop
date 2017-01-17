@@ -1,51 +1,59 @@
 ![](../common/images/customer.logo.png)
 ---
-# ORACLE Cloud-Native DevOps workshop #
+# ORACLE Cloud-Native DevOps workshop
 ----
-## Delete Java Cloud, Database Cloud and Application Cloud Container Services using user interface ##
+## UI を用いた Java Cloud Service, Database Cloud Service 及び Application Container Cloud Service インスタンスの削除
 
-### About this tutorial ###
+### チュートリアルについて
 
-This tutorial demonstrates how to 
+このチュートリアルでは、以下の内容を実施する:
 
-+ delete Java Cloud Service using user interface
-+ delete Database Cloud Service using user interface
-	
-### Prerequisites ###
+- UI を用いた Java Cloud Service インスタンスの削除
+- UI を用いた Database Cloud Service インスタンスの削除
 
-+ [Create Database Cloud Service Instance using user interface](../dbcs-create/README.md)
-+ [Create Java Cloud Service Instance using user interface](../jcs-create/README.md)
+### 前提
 
-### Steps ###
+以下のチュートリアルを実施済み、または削除するインスタンスが存在する事:
 
-#### Delete Java Cloud Service using user interface ####
+- [UI を用いた Database Cloud Service インスタンスの作成](../dbcs-create/README.md)
+- [UI を用いた Java Cloud Service インスタンスの作成](../jcs-create/README.md)
 
-[Sign in](../common/sign.in.to.oracle.cloud.md) to [https://cloud.oracle.com/sign-in](https://cloud.oracle.com/sign-in). On the dashboard open the Java Cloud Service Console.
+### 手順
 
-![](images/00.png)
+#### UI を用いた Java Cloud Service インスタンスの削除
 
-Click hamburger icon to list available management options and select **Delete**.
+Oracle Cloud へ[サインイン](../common/sign.in.to.oracle.cloud.md) する [(https://cloud.oracle.com/sign-in)](https://cloud.oracle.com/sign-in)。ダッシュボード画面から Java Cloud Service コンソールを開く。
 
-![](images/01.png)
+![](jpimages/cleanup-ui01.png)
 
-Java Cloud Service has a repository stored in database so you need to provide database administrator credentials to remove the schema belongs to Java Cloud Service. Click Delete. When *Force Delete* selected, deleting schemas will still be attempted but the delete will continue even if an error occurs. In this case not necessary to select.
 
-![](images/02.png)
+インスタンス表示欄の右側のハンバーガーメニューをクリックし、**削除** を選択する。
 
-Trial Java Cloud Service termination and clean up takes roughly 15-20 minutes depending on the data center resources.
+![](jpimages/cleanup-ui02.png)
 
-#### Delete Database Cloud Service using user interface ####
 
-Open the Database Cloud Service console. To go back from other Cloud Service console to the myServices Dashboard click the Dashboard button on the top right corner of the Oracle Public Cloud user interface. Select the Database Cloud Service item in case of slim menu or tile in case of main Dashboard page.
+Java Cloud Service は、Database にリポジトリを格納している。そのため、Database Cloud Service インスタンスからリポジトリを削除するためにデータベース管理者の認証情報を入力する必要がある。そして削除をクリックする。**強制削除** を選択すると、削除中にエラーが発生しもスキーマの削除を継続して行う。このチュートリアルでは、選択しない。
 
-![](images/03.png)
+![](jpimages/cleanup-ui03.png)
 
-Click on hamburger icon to list available management options and select Delete.
 
-![](images/04.png)
+データセンターのリソースにも依存するが Java Cloud Service インスタンスの削除には大体 15 から 20 分程度かかる。
 
-Click the Delete button to confirm.
+#### UI を用いた Database Cloud Service インスタンスの削除
 
-![](images/05.png)
+Database Cloud Service コンソールを開く。様々なクラウドサービスのコンソール画面からダッシュボード画面に戻るには、画面右上部の **ダッシュボード** をクリックする。そして、ダッシュボード画面から Database Cloud Service を選択する。
 
-Trial Database Cloud Service termination and clean up takes roughly 15-20 minutes depending the data center resources.
+![](jpimages/cleanup-ui04.png)
+
+
+インスタンス表示欄の右側のハンバーガーメニューをクリックし、**削除** を選択する。
+
+![](jpimages/cleanup-ui05.png)
+
+
+確認のダイアログ画面で削除をクリックする。
+
+![](jpimages/cleanup-ui06.png)
+
+
+データセンターのリソースにも依存するが Database Cloud Service インスタンスの削除には大体 15 から 20 分程度かかる。
